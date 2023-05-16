@@ -1,0 +1,47 @@
+name: Simulator Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Install Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 18
+        cache: 'npm'
+
+    - name: Install winglang package globally
+      run: npm install -g winglang
+
+    - name: Run tests
+      run: |
+        fail_counter=0
+        success_counter=0
+        current_dir=$(pwd)
+        for file in $(find examples -name "*.w"); do
+          dir=$(dirname $file)
+          filename=$(basename $file)
+          echo "Running tests in $dir with $filename"
+          if cd $dir && wing test --debug $filename; then
+            ((success_counter++))
+          else
+            ((fail_counter++))
+          fi
+          cd $current_dir
+        done
+        echo "$success_counter test(s) passed. $fail_counter test(s) failed."
+        if (( fail_counter > 0 )); then
+          echo "$fail_counter test(s) failed."
+          exit 1
+        fi
