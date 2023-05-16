@@ -24,6 +24,7 @@ jobs:
       run: npm install -g winglang
 
     - name: Run tests
+      shell: bash
       run: |
         fail_counter=0
         success_counter=0
@@ -32,15 +33,21 @@ jobs:
           dir=$(dirname $file)
           filename=$(basename $file)
           echo "Running tests in $dir with $filename"
-          if cd $dir && wing test --debug $filename; then
-            ((success_counter++))
+          if cd $dir; then
+            if wing test --debug $filename; then
+              success_counter=$(expr $success_counter + 1)
+            else
+              fail_counter=$(expr $fail_counter + 1)
+            fi
+            cd $current_dir
           else
-            ((fail_counter++))
+            echo "Failed to change directory to $dir. Skipping this test."
+            fail_counter=$(expr $fail_counter + 1)
           fi
-          cd $current_dir
         done
         echo "$success_counter test(s) passed. $fail_counter test(s) failed."
-        if (( fail_counter > 0 )); then
+        if [ $fail_counter -gt 0 ]; then
           echo "$fail_counter test(s) failed."
           exit 1
         fi
+        exit 0
