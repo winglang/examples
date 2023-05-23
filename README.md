@@ -10,6 +10,7 @@ This repo contains full examples, tested against the most recent releases of Win
 
 ### Wing - Provider Specific
 
+- [AWS CDK Hello World](./examples/awscdk-hello-world)
 - [AWS CDK Docker Function](./examples/awscdk-docker-python-lambda)
 - [Terraform Module](./examples/cdktf-terraform-hcl-module)
 
