@@ -1,4 +1,4 @@
-name: Simulator Tests
+name: AWS Tests (terraform)
 
 on:
   push:
@@ -39,4 +39,4 @@ jobs:
       - name: Install winglang globally
         run: npm install -g winglang
       - name: Execute wing test in matrix directory
-        run: cd ${{ matrix.directory }} && wing test --debug main.w
+        run: cd ${{ matrix.directory }} && wing test --debug --target tf-aws main.w

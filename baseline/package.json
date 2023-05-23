@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "aws-cdk-lib": "^2.80.0",
+    "cdktf": "^0.16.1"
+  }
+}

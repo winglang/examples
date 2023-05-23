@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "cdktf": "^0.16.1"
+  }
+}

@@ -1,0 +1,10 @@
+[tool.poetry]
+name = "wing-example"
+version = "0.1.0"
+description = ""
+authors = ["John Doe <john.doe@example.org>"]
+readme = "README.md"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
