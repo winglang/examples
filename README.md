@@ -4,7 +4,14 @@ This repo contains full examples, tested against the most recent releases of Win
 
 ## Examples
 
+### Wing - Generic
+
 - [Hello Wing](./examples/hello-wing)
+
+### Wing - Provider Specific
+
+- [AWS CDK Docker Function](./examples/awscdk-docker-python-lambda)
+- [Terraform Module](./examples/cdktf-terraform-hcl-module)
 
 ## Contributing 🤝
 
