@@ -2,6 +2,8 @@ name: Wing SDK Tests
 
 on:
   push:
+    paths-ignore:
+      - '**/*.md'
     branches: [ main ]
   pull_request:
     branches: [ main ]
