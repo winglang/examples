@@ -1,10 +1,17 @@
-name: Wing Provider Specific
+name: Wing Provider Specific Tests
 
 on:
   push:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+
+permissions:
+  id-token: write # This is required for requesting the JWT
+  contents: read  # This is required for actions/checkout
+
+env:
+  AWS_REGION : "us-east-1"
 
 jobs:
   setup:
@@ -18,7 +25,7 @@ jobs:
         id: setdirs
         shell: bash
         run: |
-          dirs=$(ls -d examples/*/ | sed 's/\/$//' | jq -R -s -c 'split("\n")[:-1]')
+          dirs=$(ls -d examples/provider-specific/*/ | sed 's/\/$//' | jq -R -s -c 'split("\n")[:-1]')
           matrix=$(echo "{ \"directory\": $dirs }")
           echo $matrix
           echo "::set-output name=dirs::$matrix"
@@ -32,11 +39,17 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
-      - name: Setup Node.js v16
+      - name: Setup Node.js v18
         uses: actions/setup-node@v3
         with:
           node-version: 18
       - name: Install winglang globally
         run: npm install -g winglang
-      - name: Execute wing test in matrix directory
-        run: cd ${{ matrix.directory }} && wing test --debug --target tf-aws main.w
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          role-session-name: gh-actions-winglang-examples
+          aws-region: ${{ env.AWS_REGION }}
+      - name: Execute test in matrix directory
+        run: cd ${{ matrix.directory }} && ./test.sh
