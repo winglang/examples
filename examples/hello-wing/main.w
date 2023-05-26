@@ -21,7 +21,7 @@ let getTimeout = ():duration => {
   if util.env("WING_TARGET") == "sim" {
     return 1s;
   }
-  return 5s;
+  return 10s;
 };
 
 let timeout = getTimeout();
