@@ -26,9 +26,9 @@ jobs:
         shell: bash
         run: |
           dirs=$(ls -d examples/provider-specific/*/ | sed 's/\/$//' | jq -R -s -c 'split("\n")[:-1]')
-          matrix=$(echo "{ \"directory\": $dirs }")
-          echo $matrix
-          echo "::set-output name=dirs::$matrix"
+          processed_dirs=$(echo "{ \"directory\": $dirs }" | jq -c '[ .directory[] | {directory: ., name: (split("/") | last)}]')
+          wrapped_dirs=$(echo "{ \"example\": $processed_dirs }" | jq -c .)
+          echo "::set-output name=dirs::$wrapped_dirs"
 
   test:
     needs: setup
@@ -36,6 +36,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix: ${{ fromJson(needs.setup.outputs.examples) }}
+    name: ${{ matrix.example.name }}
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
@@ -52,4 +53,4 @@ jobs:
           role-session-name: gh-actions-winglang-examples
           aws-region: ${{ env.AWS_REGION }}
       - name: Execute test in matrix directory
-        run: cd ${{ matrix.directory }} && ./test.sh
+        run: cd ${{ matrix.example.directory }} && ./test.sh
