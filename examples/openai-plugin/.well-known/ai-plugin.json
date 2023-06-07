@@ -9,9 +9,9 @@
   },
   "api": {
       "type": "openapi",
-      "url": "https://surfer-172-30-6-131-hotspot.tail5863c.ts.net/openapi.yaml"
+      "url": "https://sebastians-mac-mini.tail5863c.ts.net/openapi.yaml"
   },
-  "logo_url": "https://surfer-172-30-6-131-hotspot.tail5863c.ts.net/logo.png",
+  "logo_url": "https://sebastians-mac-mini.tail5863c.ts.net/logo.png",
   "contact_email": "support@example.com",
   "legal_info_url": "http://www.example.com/legal"
 }

@@ -17,6 +17,7 @@ bucket.addObject(aiPluginPath, utils.readFile(aiPluginPath));
 
 let api = new cloud.Api();
 
+
 let options_handler = inflight(req: cloud.ApiRequest): cloud.ApiResponse => {
   return cloud.ApiResponse {
     headers: {
@@ -30,13 +31,14 @@ let options_handler = inflight(req: cloud.ApiRequest): cloud.ApiResponse => {
 
 api.options("/${openapiPath}", options_handler);
 api.get("/${openapiPath}", inflight (req: cloud.ApiRequest): cloud.ApiResponse => {
-  // let fileContent = bucket.get(openapiPath);
-
-  let foo = "bar";
+  let fileContent = bucket.publicUrl(openapiPath);
 
   return cloud.ApiResponse {
     status: 200,
-    body: foo,
+    headers: {
+      "Content-Type": "text/yaml",
+    },
+    body: fileContent
   };
 });
 
