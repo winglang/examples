@@ -9,9 +9,9 @@
   },
   "api": {
       "type": "openapi",
-      "url": "https://sebastians-mac-mini.tail5863c.ts.net/openapi.yaml"
+      "url": "http://example.com/openapi.json"
   },
-  "logo_url": "https://sebastians-mac-mini.tail5863c.ts.net/logo.png",
+  "logo_url": "http://example.com/logo.png",
   "contact_email": "support@example.com",
   "legal_info_url": "http://www.example.com/legal"
 }

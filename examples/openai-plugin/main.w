@@ -9,14 +9,13 @@ class Utils {
 let utils = new Utils();
 
 let bucket = new cloud.Bucket();
-let openapiPath = "openapi.yaml";
+let openapiPath = "openapi.json";
 let aiPluginPath = ".well-known/ai-plugin.json";
 
 bucket.addObject(openapiPath, utils.readFile(openapiPath));
 bucket.addObject(aiPluginPath, utils.readFile(aiPluginPath));
 
 let api = new cloud.Api();
-
 
 let options_handler = inflight(req: cloud.ApiRequest): cloud.ApiResponse => {
   return cloud.ApiResponse {
@@ -31,13 +30,10 @@ let options_handler = inflight(req: cloud.ApiRequest): cloud.ApiResponse => {
 
 api.options("/${openapiPath}", options_handler);
 api.get("/${openapiPath}", inflight (req: cloud.ApiRequest): cloud.ApiResponse => {
-  let fileContent = bucket.publicUrl(openapiPath);
+  let fileContent = bucket.getJson(openapiPath);
 
   return cloud.ApiResponse {
     status: 200,
-    headers: {
-      "Content-Type": "text/yaml",
-    },
     body: fileContent
   };
 });
