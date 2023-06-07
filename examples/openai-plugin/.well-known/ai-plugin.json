@@ -1,0 +1,17 @@
+{
+  "schema_version": "v1",
+  "name_for_human": "Open Source - Help Wanted",
+  "name_for_model": "open_source_help_wanted",
+  "description_for_human": "Find issues in open source projects that you can help with. It's limited to the Wing Programming Language right now, ",
+  "description_for_model": "Find issues in open source projects that you can help with. It's limited to the Wing Programming Language right now, ",
+  "auth": {
+      "type": "none"
+  },
+  "api": {
+      "type": "openapi",
+      "url": "https://surfer-172-30-6-131-hotspot.tail5863c.ts.net/openapi.yaml"
+  },
+  "logo_url": "https://surfer-172-30-6-131-hotspot.tail5863c.ts.net/logo.png",
+  "contact_email": "support@example.com",
+  "legal_info_url": "http://www.example.com/legal"
+}
