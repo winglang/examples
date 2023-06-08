@@ -12,6 +12,7 @@ exports.getIssues = async function () {
     }
   } catch (error) {
     console.error(`Failed to fetch issues: ${error.message}`);
+    throw error;
   }
 }
 

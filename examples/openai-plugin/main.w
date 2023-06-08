@@ -6,6 +6,13 @@ class Utils {
   extern "./util.js" inflight getIssues(): str;
 }
 
+inflight class TestUtils {
+  init() {}
+  extern "./test-util.js" inflight fetch(): Json;
+  extern "./test-util.js" inflight mockFetch(): void;
+  extern "./test-util.js" inflight resetMocks(): void;
+}
+
 let utils = new Utils();
 
 let bucket = new cloud.Bucket();
@@ -57,3 +64,10 @@ api.get("/issues", inflight (req: cloud.ApiRequest): cloud.ApiResponse => {
     body: issues,
   };
 });
+
+test "fetch issues" {
+  let testUtils = new TestUtils();
+  testUtils.mockFetch();
+  utils.getIssues();
+  testUtils.resetMocks();
+}
