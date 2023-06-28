@@ -20,5 +20,5 @@ let timeout = getTimeout();
 test "Hello, world!" {
   queue.push("world!");
   util.sleep(timeout);
-  assert("Hello, world!" == bucket.get("wing.txt"));
+  assert("Hello, wo!" == bucket.get("wing.txt"));
 }
