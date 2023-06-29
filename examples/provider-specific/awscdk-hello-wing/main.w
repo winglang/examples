@@ -10,16 +10,12 @@ queue.setConsumer(inflight (message: str) => {
 
 // tests
 
-let getTimeout = ():duration => {
-  if util.env("WING_TARGET") == "sim" {
-    return 1s;
-  }
-  return 5s;
-};
-
-let timeout = getTimeout();
-
 test "Hello, world!" {
+  let var timeout = 1s;
+  if util.env("WING_TARGET") != "sim" {
+    timeout = 10s;
+  }
+
   queue.push("world!");
   util.sleep(timeout);
   assert("Hello, world!" == bucket.get("wing.txt"));
