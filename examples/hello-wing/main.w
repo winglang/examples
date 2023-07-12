@@ -9,12 +9,11 @@ queue.setConsumer(inflight (message: str) => {
 }, timeout: 1s);
 
 test "Hello, world!" {
-  let var timeout = 1s;
-  if util.env("WING_TARGET") != "sim" {
-    timeout = 10s;
-  }
-
   queue.push("world!");
-  util.sleep(timeout);
+
+  let found = util.waitUntil((): bool => {
+    return bucket.exists("wing.txt");
+  });
+
   assert("Hello, world!" == bucket.get("wing.txt"));
 }
