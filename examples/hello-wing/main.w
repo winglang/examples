@@ -6,12 +6,13 @@ let queue = new cloud.Queue();
 
 queue.setConsumer(inflight (message: str) => {
   bucket.put("wing.txt", "Hello, ${message}");
-}, timeout: 1s);
+}, timeout: 3s);
 
 test "Hello, world!" {
   queue.push("world!");
 
   let found = util.waitUntil((): bool => {
+    log("Checking if wing.txt exists");
     return bucket.exists("wing.txt");
   });
 
