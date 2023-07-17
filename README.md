@@ -16,6 +16,8 @@ This repo contains full examples, tested against the most recent releases of Win
 - [AWS CDK Hello World](./examples/provider-specific/awscdk-hello-wing)
 - [AWS CDK Docker Function](./examples/provider-specific/awscdk-docker-python-lambda)
 - [Terraform Module](./examples/provider-specific/cdktf-terraform-hcl-module)
+- [Github AWS OIDC Setup](https://github.com/winglang/github-aws-oidc) (dedicated repository)
+
 
 ## Contributing 🤝
 
