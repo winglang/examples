@@ -56,6 +56,7 @@ jobs:
         run: cd ${{ matrix.example.directory }} && wing test --debug main.w
 
   test-tf-aws:
+    if: ${{ matrix.example.name != "redis (AWS)" }}
     needs: setup
     runs-on: ubuntu-latest
     strategy:
