@@ -83,7 +83,7 @@ api.get("/hello", inflight (req: cloud.ApiRequest): cloud.ApiResponse => {
   if (!authenticated) {
     return cloud.ApiResponse {
       status: 401,
-      headers: Map<str> {
+      headers: {
         "Content-Type" => "text/plain"
       },
       body: "Unauthorized"
@@ -92,21 +92,27 @@ api.get("/hello", inflight (req: cloud.ApiRequest): cloud.ApiResponse => {
 
   return cloud.ApiResponse {
     status: 200,
-    headers: Map<str> {
+    headers: {
       "Content-Type" => "text/plain"
     },
-    body: "Hello, world!"
+    body: "hello world"
   };
 });
 
+// workaround for https://github.com/winglang/wing/issues/3289
+// this shouldn't be necessary, since api.url should
+// be directly accessible in the test
+let apiUrl = api.url;
+
 test "not authenticated" {
-  let response = http.get("${api.url}/hello");
+  let response = http.get("${apiUrl}/hello");
   assert(response.status == 401);
 }
 
 test "authenticated" {
-  let response = http.get("${api.url}/hello", {
+  let response = http.get("${apiUrl}/hello", {
     headers: {
+      Accept: "application/json",
       Authorization: "Basic " + Utils.base64encode("admin:admin")
     }
   });
