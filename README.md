@@ -7,6 +7,8 @@ This repo contains full examples, tested against the most recent releases of Win
 ### Wing - Generic
 
 - [Hello Wing](./examples/hello-wing)
+- [Redis](./examples/redis)
+- [S3 Backend](./examples/s3-backend)
 
 ### Wing - Provider Specific
 
