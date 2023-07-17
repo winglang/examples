@@ -7,6 +7,7 @@ This repo contains full examples, tested against the most recent releases of Win
 ### Wing - Generic
 
 - [Hello Wing](./examples/hello-wing)
+- [HTTP Api Basic Auth](./examples/api-basic-auth/)
 - [Redis](./examples/redis)
 - [S3 Backend](./examples/s3-backend)
 - [Terraform Backend](https://github.com/winglang/terraform-backend) (dedicated repository)
