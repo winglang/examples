@@ -56,7 +56,6 @@ jobs:
         run: cd ${{ matrix.example.directory }} && wing test --debug main.w
 
   test-tf-aws:
-    if: ${{ matrix.example.name != "redis (AWS)" }}
     needs: setup
     runs-on: ubuntu-latest
     strategy:
@@ -66,6 +65,12 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
+      - name: Check for skip.ci file
+        run: |
+          if [[ -f "${{ matrix.example.directory }}/skip.ci.aws" ]]; then
+            echo "skip.ci file detected. Skipping job."
+            exit 0
+          fi
       - name: Setup Node.js v18
         uses: actions/setup-node@v3
         with:
