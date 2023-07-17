@@ -68,22 +68,28 @@ jobs:
       # unfortunately, there's no neutral status
       # see https://github.com/actions/runner/issues/662
       - name: Check for skip.ci file
+        id: check_skip
         run: |
-          if [[ -f "${{ matrix.example.directory }}skip.ci.aws" ]]; then
+          if [[ -f "${{ matrix.example.directory }}/skip.ci.aws" ]]; then
             echo "skip.ci file detected. Skipping job."
-            exit 0
+            echo "::set-output name=skip::true"
+          else
+            echo "::set-output name=skip::false"
           fi
       - name: Setup Node.js v18
         uses: actions/setup-node@v3
         with:
           node-version: 18
       - name: Install winglang globally
+        if: steps.check_skip.outputs.skip == 'false'
         run: npm install -g winglang
       - name: Configure AWS credentials
+        if: steps.check_skip.outputs.skip == 'false'
         uses: aws-actions/configure-aws-credentials@v2
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           role-session-name: gh-actions-winglang-examples
           aws-region: ${{ env.AWS_REGION }}
       - name: Execute wing test in matrix directory
+        if: steps.check_skip.outputs.skip == 'false'
         run: cd ${{ matrix.example.directory }} && wing test --debug -t tf-aws main.w
