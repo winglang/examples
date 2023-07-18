@@ -52,6 +52,12 @@ jobs:
           node-version: 18
       - name: Install winglang globally
         run: npm install -g winglang
+      - name: Check for package.json file
+        run: |
+          if [[ -f "${{ matrix.example.directory }}/package.json" ]]; then
+            cd ${{ matrix.example.directory }}
+            npm install
+          fi
       - name: Execute wing test in matrix directory
         run: cd ${{ matrix.example.directory }} && wing test --debug main.w
 
