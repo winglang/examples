@@ -83,6 +83,12 @@ jobs:
       - name: Install winglang globally
         if: steps.check_skip.outputs.skip == 'false'
         run: npm install -g winglang
+      - name: Check for package.json file
+        run: |
+          if [[ -f "${{ matrix.example.directory }}/package.json" ]]; then
+            cd ${{ matrix.example.directory }}
+            npm install
+          fi
       - name: Configure AWS credentials
         if: steps.check_skip.outputs.skip == 'false'
         uses: aws-actions/configure-aws-credentials@v2
