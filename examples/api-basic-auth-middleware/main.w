@@ -75,7 +75,9 @@ class BasicAuth {
 }
 
 let auth = new BasicAuth();
-let api = new cloud.Api();
+// conflicting with ../api-basic-auth/ application
+// https://github.com/winglang/wing/issues/3224
+let api = new cloud.Api() as "basic-auth-middleware-api";
 
 // class based inflight functions are not yet supported
 // see https://github.com/winglang/wing/issues/3250
