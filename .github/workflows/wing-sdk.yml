@@ -32,14 +32,20 @@ jobs:
           dirs=$(ls -d examples/*/ | sed 's/\/$//' | grep -v "provider-specific" | jq -R -s -c 'split("\n")[:-1]')
           processed_dirs=$(echo "{ \"directory\": $dirs }" | jq -c '[ .directory[] | {directory: ., name: (split("/") | last)}]')
           wrapped_dirs=$(echo "{ \"example\": $processed_dirs }" | jq -c .)
-          echo "dirs=$wrapped_dirs" >> $GITHUB_ENV
+          echo "DIRS=$wrapped_dirs" >> $GITHUB_ENV
+      - name: Pass environment variable to output
+        id: passenv
+        run: |
+          echo "::set-output name=dirs::$DIRS"
+    outputs:
+      examples: ${{ steps.passenv.outputs.dirs }}
 
   test:
     needs: setup
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
-      matrix: ${{ fromJson(env.dirs) }}
+      matrix: ${{ fromJson(needs.setup.outputs.examples) }}
     name: ${{ matrix.example.name }} (Simulator)
     steps:
       - name: Checkout Repository
@@ -64,7 +70,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
-      matrix: ${{ fromJson(env.dirs) }}
+      matrix: ${{ fromJson(needs.setup.outputs.examples) }}
     name: ${{ matrix.example.name }} (AWS)
     steps:
       - name: Checkout Repository
