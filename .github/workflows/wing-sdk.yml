@@ -107,7 +107,7 @@ jobs:
       - name: Execute wing test in matrix directory
         if: env.skip == 'false'
         env:
-          TF_LOG: trace
+          TF_LOG: info
           TF_LOG_PATH: ${{ runner.workspace }}/terraform.log
         run: cd ${{ matrix.example.directory }} && wing test --debug -t tf-aws main.w
       - name: Output Terraform log
