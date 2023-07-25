@@ -1,4 +1,4 @@
-# Simple stock poller
+# Simple Stock Poller
 
 This is an example for a simple stock polling application, that retrieves data from [Twelve Data API](https://twelvedata.com/), stores the latest stock price in DynamoDB and publishes the update to a SQS queue.
 
