@@ -27,20 +27,22 @@ wing it
 
 ```
 wing compile --target tf-aws stock-poller.w
-```
 
-### Wing deploy
-
-```
 cd target/stock-updates.tfaws
 ```
 
+### Initialization
 For your first deployment you have to initialize Terraform in the working directory:
 ```
 terraform init
 ```
 
-Afterwards you can deploy the project:
+And you also need to create the secret in [AWS Secrets Manager](https://docs.aws.amazon.com/secretsmanager/latest/userguide/intro.html), refer also to [documentation of `cloud.secret` for AWS as target](https://www.winglang.io/docs/standard-library/cloud/secret#aws-tf-aws-and-awscdk).
+```
+aws secretsmanager create-secret --name twelve-data-api-key --secret-string your_api_key
+```
+
+### Wing deploy
 ```
 terraform apply
 ```
