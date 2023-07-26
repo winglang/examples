@@ -8,6 +8,8 @@ It show case the capabilities of Wing to fetch data from an external API and dis
 
 ![Sequence Diagram](./sequence-diagram.png)
 
+To extend this example, try making the polling application track five ticket symbols, or try displaying the information using the cloud.Website class
+
 ## Prerequisite
 
 Please make sure to use a current and working setup of the [wing cli](https://docs.winglang.io/getting-started/installation)
