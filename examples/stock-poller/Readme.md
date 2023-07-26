@@ -23,6 +23,8 @@ For more details see also [Wing compatability matrix](https://www.winglang.io/do
 wing it
 ```
 
+To test the application in the Wing Console, you have to set up a secret at `~/.wing/secrets.json`. For more details refer to [Secrets with the Simulator target](https://www.winglang.io/docs/standard-library/cloud/secret#simulator-sim).
+
 ### Wing compile
 
 ```
