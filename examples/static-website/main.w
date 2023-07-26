@@ -29,7 +29,7 @@ api.post("/hello", inflight (request: cloud.ApiRequest): cloud.ApiResponse => {
       "Content-Type" => "text/html",
       "Access-Control-Allow-Origin" => "*",
     },
-    body: " <div id=\"hello\" class=\"mt-4\">Hello ${counter.inc()}</div>",
+    body: "<div id=\"hello\" class=\"mt-4\">Hello ${counter.inc()}</div>",
   };
 });
 
