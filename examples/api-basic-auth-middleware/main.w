@@ -100,7 +100,7 @@ let authenticatedMiddleware = (handler: inflight (cloud.ApiRequest): cloud.ApiRe
   return middleware;
 };
 
-api.get("/hello", authenticatedMiddleware(inflight (request: cloud.ApiRequest): cloud.ApiResponse => {
+api.get("/hello-middleware", authenticatedMiddleware(inflight (request: cloud.ApiRequest): cloud.ApiResponse => {
   return cloud.ApiResponse {
     status: 200,
     headers: {
@@ -116,12 +116,12 @@ api.get("/hello", authenticatedMiddleware(inflight (request: cloud.ApiRequest): 
 let apiUrl = api.url;
 
 test "not authenticated" {
-  let response = http.get("${apiUrl}/hello");
+  let response = http.get("${apiUrl}/hello-middleware");
   assert(response.status == 401);
 }
 
 test "authenticated" {
-  let response = http.get("${apiUrl}/hello", {
+  let response = http.get("${apiUrl}/hello-middleware", {
     headers: {
       Accept: "application/json",
       Authorization: "Basic " + Utils.base64encode("admin:admin")

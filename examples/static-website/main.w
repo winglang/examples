@@ -9,7 +9,7 @@ let website = new cloud.Website(
 let api = new cloud.Api();
 website.addJson("config.json", { api: api.url });
 
-let counter = new cloud.Counter();
+let counter = new cloud.Counter() as "website-counter";
 
 let corsHandler = inflight(req: cloud.ApiRequest): cloud.ApiResponse => {
   return cloud.ApiResponse {
@@ -21,8 +21,8 @@ let corsHandler = inflight(req: cloud.ApiRequest): cloud.ApiResponse => {
     status: 204
   };
 };
-api.options("/hello", corsHandler);
-api.post("/hello", inflight (request: cloud.ApiRequest): cloud.ApiResponse => {
+api.options("/hello-static", corsHandler);
+api.post("/hello-static", inflight (request: cloud.ApiRequest): cloud.ApiResponse => {
   return cloud.ApiResponse {
     status: 200,
     headers: {
@@ -54,5 +54,5 @@ let invokeAndAssert = inflight(response: http.Response, expected: str) => {
 // }
 
 test "api returns the correct response" {
-  invokeAndAssert(http.post("${apiUrl}/hello"), "Hello 0");
+  invokeAndAssert(http.post("${apiUrl}/hello-static"), "Hello 0");
 }

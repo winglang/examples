@@ -29,7 +29,7 @@
             .then(response => response.json())
             .then(data => {
                 var helloButton = document.getElementById('helloButton');
-                helloButton.setAttribute('hx-post', `${data.api}/hello`);
+                helloButton.setAttribute('hx-post', `${data.api}/hello-static`);
                 htmx.process(helloButton);
             });
     </script>
