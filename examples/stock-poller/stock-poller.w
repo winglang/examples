@@ -2,22 +2,31 @@ bring cloud;
 bring http;
 
 let tickerSymbol = "GME";
-let twelveDataApiKey = new cloud.Secret(
-  name: "twelve-data-api-key",
-);
+
+class TwelveDataApi {
+    key: cloud.Secret;
+
+    init() {
+        this.key = new cloud.Secret(
+          name: "twelve-data-api-key"
+        );
+    }
+
+    inflight stockUpdates(tickerSymbol: str): http.Response {
+        return http.get("https://api.twelvedata.com/time_series?symbol=${tickerSymbol}&interval=1min&outputsize=1&apikey=${this.key.value()}");
+    }
+}
 
 let recentStockPriceCache = new cloud.Counter(
-  initial: 0,
+  initial: 0
 );
 
 let stockUpdatesQueue = new cloud.Queue("stock-updates-queue");
+let twelveDataApi = new TwelveDataApi();
 
 let stockUpdatesFetchSchedule = new cloud.Schedule(rate: 2m);       // Twelve Data free tier gives you 800 API credits per day. So with a rate of 2 minutes, you use 720 API credits per day
 let stockUpdatesPoller = stockUpdatesFetchSchedule.onTick(inflight () => {
-  
-  let secretValue = twelveDataApiKey.value();
-  let apiUrl = "https://api.twelvedata.com/time_series?symbol=${tickerSymbol}&interval=1min&outputsize=1&apikey=${secretValue}";
-  let stockUpdates = http.get(apiUrl);
+  let stockUpdates = twelveDataApi.stockUpdates(tickerSymbol);
 
   log("Status: ${stockUpdates.status}");
   log("Body: ${stockUpdates.body}");
