@@ -30,9 +30,9 @@ To test the application in the Wing Console, you have to set up a secret at `~/.
 ### Wing compile
 
 ```
-wing compile --target tf-aws stock-poller.w
+wing compile --target tf-aws main.w
 
-cd target/stock-updates.tfaws
+cd target/main.tfaws
 ```
 
 ### Initialization
