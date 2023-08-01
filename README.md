@@ -10,6 +10,7 @@ This repo contains full examples, tested against the most recent releases of Win
 - [HTTP Api Basic Auth](./examples/api-basic-auth/)
 - [HTTP Api Basic Auth with Middleware](./examples/api-basic-auth-middleware/)
 - [HTTP Api Server Side Rendered HTML](./examples/api-counter-ssr/)
+- [Static Website using htmx with CORS API](./examples/static-website/)
 - [Simple Stock Poller](./examples/stock-poller/)
 - [Redis](./examples/redis)
 - [S3 Backend](./examples/s3-backend)
