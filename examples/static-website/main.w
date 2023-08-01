@@ -55,4 +55,4 @@ let invokeAndAssert = inflight(response: http.Response, expected: str) => {
 
 test "api returns the correct response" {
   invokeAndAssert(http.post("${apiUrl}/hello-static"), "Hello 0");
-}
+} as "static-website-api-test";

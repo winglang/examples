@@ -62,6 +62,10 @@ jobs:
             cd ${{ matrix.example.directory }}
             npm install
           fi
+      - name: Create ~/.wing/secrets.json
+        run: |
+          mkdir -p ~/.wing
+          echo '{}' > ~/.wing/secrets.json
       - name: Execute wing test in matrix directory
         run: cd ${{ matrix.example.directory }} && wing test --debug main.w
 
