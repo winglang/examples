@@ -3,6 +3,9 @@ bring ex;
 bring util;
 bring http;
 
+//TODO: need to fix:
+// 1. when the list is empty, get fails
+
 enum Status {
   PENDING, COMPLETED
 }
@@ -10,7 +13,7 @@ enum Status {
 struct Task {
   id: str;
   description: str;
-  status: Status;
+  status: str;
 }
 
 // Currently interfaces must explicitly extend std.IResource - see https://github.com/winglang/wing/issues/1961
@@ -26,12 +29,16 @@ interface ITaskStorage extends std.IResource {
   inflight find(r: IMyRegExp): Array<Task>;
 }
 
+/********************************************************************
+ * Boilerplate code we'd love to get rid of as Winglang develops {
+ ********************************************************************/
+
 // Util method to get Status enum from str
 let convertStrToStatusEnum = inflight (s: str): Status => {
-  if s == "${Status.COMPLETED}" {
+  if s == "COMPLETED" {
     return Status.COMPLETED;
   }
-  elif s == "${Status.PENDING}" {
+  elif s == "PENDING" {
     return Status.PENDING;
   }
   else {
@@ -42,44 +49,62 @@ let convertStrToStatusEnum = inflight (s: str): Status => {
 // Util method to get str from Status enum
 let convertStatusEnumToStr = inflight (s: Status): str => {
   if s == Status.COMPLETED {
-    return "${Status.COMPLETED}";
+    return "COMPLETED";
   }
   elif s == Status.PENDING {
-    return "${Status.PENDING}";
+    return "PENDING";
   }
   else {
     throw("Unknown task status: ${s}");
   }
 };
 
-// Util method to convert JSON to Task
-let convertJsonToTask = inflight (j: Json): Task => {
-  return Task {
-    id: j.get("id").asStr(),
-    description: j.get("description").asStr(),
-    status: convertStrToStatusEnum(j.get("status").asStr()) 
-  };
-};
-
-// Util method to convert Task to JSON
-let convertTaskToJson = inflight (task: Task): Json => {
-  return {
-    id: task.id,
-    description: task.description,
-    status: convertStatusEnumToStr(task.status) 
-  };
-};
-
 // Util method to convert Task array to JSON
 let convertTaskArrayToJson = inflight (taskArray: Array<Task>): Json => {
   let jsonArray = MutJson {};
-  let i = 0;
+  let var i = 0;
   for task in taskArray {
-    let j = convertTaskToJson(task);
+    let j = Json task;
     jsonArray.setAt(i, j);
+    i = i + 1;
   }
   return jsonArray;
 };
+
+// Constants - bolierplate code to enable CORS - see https://github.com/winglang/wing/issues/2289
+let optionsTasksRouteAPICORSHeadersMap = {
+  "Access-Control-Allow-Headers" => "Content-Type",
+  "Access-Control-Allow-Origin" => "*",
+  "Access-Control-Allow-Methods" => "OPTIONS,POST,GET"
+};
+let optionsTasksIdRouteAPICORSHeadersMap = {
+  "Access-Control-Allow-Headers" => "Content-Type",
+  "Access-Control-Allow-Origin" => "*",
+  "Access-Control-Allow-Methods" => "OPTIONS,GET,PUT,DELETE"
+};
+let postAPICORSHeadersMap = {
+  "Access-Control-Allow-Headers" => "Content-Type",
+  "Access-Control-Allow-Origin" => "*",
+  "Access-Control-Allow-Methods" => "OPTIONS,POST"
+};
+let putAPICORSHeadersMap = {
+  "Access-Control-Allow-Headers" => "Content-Type",
+  "Access-Control-Allow-Origin" => "*",
+  "Access-Control-Allow-Methods" => "PUT"
+};
+let getAPICORSHeadersMap = {
+  "Access-Control-Allow-Headers" => "Content-Type",
+  "Access-Control-Allow-Origin" => "*",
+  "Access-Control-Allow-Methods" => "OPTIONS,GET"
+};
+let deleteAPICORSHeadersMap = {
+  "Access-Control-Allow-Headers" => "Content-Type",
+  "Access-Control-Allow-Origin" => "*",
+  "Access-Control-Allow-Methods" => "OPTIONS,DELETE"
+};
+/********************************************************************
+ * } end of boilerplate code
+ ********************************************************************/
 
 class TaskStorage impl ITaskStorage {
   db: ex.Redis;
@@ -100,7 +125,7 @@ class TaskStorage impl ITaskStorage {
     let taskJson = {
       id: id,
       description: description,
-      status: "${Status.PENDING}"
+      status: "PENDING"
     };
     this._add(id, taskJson);
     log("adding task ${id} with data: ${taskJson}"); 
@@ -114,7 +139,7 @@ class TaskStorage impl ITaskStorage {
 
   inflight get(id: str): Task? {
     if let taskJson = this.db.get(id) {
-      return convertJsonToTask(Json.parse(taskJson));
+      return Task.fromJson(Json.parse(taskJson));
     }
   }
 
@@ -134,7 +159,7 @@ class TaskStorage impl ITaskStorage {
       if let taskJsonStr = this.db.get(id) {
         let taskJson = Json.parse(taskJsonStr);
         if r.test(taskJson.get("description").asStr()) {
-          result.push(convertJsonToTask(taskJson));
+          result.push(Task.fromJson(taskJson));
         }
       }
     }
@@ -152,24 +177,15 @@ class TaskApi {
     this.api = new cloud.Api();
     this.taskStorage = new TaskStorage();
     
-    // Bolierplate code to enable CORS - see https://github.com/winglang/wing/issues/2289
     this.api.options("/tasks", inflight(req: cloud.ApiRequest): cloud.ApiResponse => {
       return cloud.ApiResponse {
-        headers: {
-          "Access-Control-Allow-Headers" => "Content-Type",
-          "Access-Control-Allow-Origin" => "*",
-          "Access-Control-Allow-Methods" => "OPTIONS,POST,GET"
-        },
+        headers: optionsTasksRouteAPICORSHeadersMap,
         status: 204
       };
     });
     this.api.options("/tasks/{id}", inflight(req: cloud.ApiRequest): cloud.ApiResponse => {
       return cloud.ApiResponse {
-        headers: {
-            "Access-Control-Allow-Headers" => "Content-Type",
-            "Access-Control-Allow-Origin" => "*",
-            "Access-Control-Allow-Methods" => "OPTIONS,GET,PUT,DELETE"
-        },
+        headers: optionsTasksIdRouteAPICORSHeadersMap,
         status: 204
       };
     });
@@ -177,7 +193,7 @@ class TaskApi {
     // API endpoints
     this.api.post("/tasks", inflight (req: cloud.ApiRequest): cloud.ApiResponse => {
       if let body = req.body {
-        let var description = body;
+        let var description = Json.parse(body).get("description").asStr();
         // Easter Egg - if you add a task with the single word "random" as the description, 
         //              the system will fetch a random task from the internet
         if description == "random" {
@@ -189,21 +205,13 @@ class TaskApi {
         } 
         let id = this.taskStorage.add(description);
         return cloud.ApiResponse { 
-          headers: {
-              "Access-Control-Allow-Headers" => "Content-Type",
-              "Access-Control-Allow-Origin" => "*",
-              "Access-Control-Allow-Methods" => "OPTIONS,POST"
-          },
+          headers: postAPICORSHeadersMap,
           status:201, 
           body: id
         };
       } else {
         return cloud.ApiResponse { 
-          headers: {
-            "Access-Control-Allow-Headers" => "Content-Type",
-            "Access-Control-Allow-Origin" => "*",
-            "Access-Control-Allow-Methods" => "OPTIONS,POST"
-          },
+          headers: postAPICORSHeadersMap,
           status: 400,
           body: "Missing body"
         };
@@ -213,7 +221,7 @@ class TaskApi {
     this.api.put("/tasks/{id}", inflight (req: cloud.ApiRequest): cloud.ApiResponse => {
       if let body = req.body {
         let id = req.vars.get("id");
-        if Json.parse(body).get("status").asStr() == "${Status.COMPLETED}" {
+        if Json.parse(body).get("status").asStr() == "COMPLETED" {
           this.taskStorage.setStatus(id, Status.COMPLETED);
         } else {
           this.taskStorage.setStatus(id, Status.PENDING);
@@ -221,32 +229,20 @@ class TaskApi {
         try {
           if let taskJson = this.taskStorage.get(id) {
             return cloud.ApiResponse { 
-              headers: {
-                "Access-Control-Allow-Headers" => "Content-Type",
-                "Access-Control-Allow-Origin" => "*",
-                "Access-Control-Allow-Methods" => "PUT"
-              },
+              headers: putAPICORSHeadersMap,
               status:200, 
-              body: "${convertTaskToJson(taskJson)}"
+              body: "${Json taskJson}"
             };
           }
         } catch {
           return cloud.ApiResponse { 
-            headers: {
-              "Access-Control-Allow-Headers" => "Content-Type",
-              "Access-Control-Allow-Origin" => "*",
-              "Access-Control-Allow-Methods" => "PUT"
-            },
+            headers: putAPICORSHeadersMap,
             status: 400 
           };
         }
       } else {
         return cloud.ApiResponse { 
-          headers: {
-            "Access-Control-Allow-Headers" => "Content-Type",
-            "Access-Control-Allow-Origin" => "*",
-            "Access-Control-Allow-Methods" => "PUT"
-          },
+          headers: putAPICORSHeadersMap,
           status: 400 
         };
       }
@@ -257,22 +253,14 @@ class TaskApi {
       try {
         if let taskJson = this.taskStorage.get(id) {
           return cloud.ApiResponse { 
-            headers: {
-              "Access-Control-Allow-Headers" => "Content-Type",
-              "Access-Control-Allow-Origin" => "*",
-              "Access-Control-Allow-Methods" => "OPTIONS,GET"
-            }, 
+            headers: getAPICORSHeadersMap, 
             status:200, 
-            body: "${convertTaskToJson(taskJson)}"
+            body: "${Json taskJson}"
           };
         }
       } catch {
         return cloud.ApiResponse { 
-          headers: {
-            "Access-Control-Allow-Headers" => "Content-Type",
-            "Access-Control-Allow-Origin" => "*",
-            "Access-Control-Allow-Methods" => "OPTIONS,GET"
-          }, 
+          headers: getAPICORSHeadersMap, 
           status: 400 
         };
       }
@@ -283,19 +271,11 @@ class TaskApi {
       try {
         this.taskStorage.remove(id);
         return cloud.ApiResponse { 
-          headers: {
-            "Access-Control-Allow-Headers" => "Content-Type",
-            "Access-Control-Allow-Origin" => "*",
-            "Access-Control-Allow-Methods" => "OPTIONS,DELETE"
-          },
+          headers: deleteAPICORSHeadersMap,
           status: 204 };
       } catch {
         return cloud.ApiResponse { 
-          headers: {
-            "Access-Control-Allow-Headers" => "Content-Type",
-            "Access-Control-Allow-Origin" => "*",
-            "Access-Control-Allow-Methods" => "OPTIONS,DELETE"
-          },
+          headers: deleteAPICORSHeadersMap,
           status: 400 
         };
       }
@@ -305,13 +285,9 @@ class TaskApi {
       let search = req.query.get("search");
       let results = this.taskStorage.find(this.createRegex(search));
       return cloud.ApiResponse { 
-        headers: {
-          "Access-Control-Allow-Headers" => "Content-Type",
-          "Access-Control-Allow-Origin" => "*",
-          "Access-Control-Allow-Methods" => "OPTIONS,GET"
-        },  
+        headers: getAPICORSHeadersMap,  
         status: 200, 
-        body: "${results}" 
+        body: "${convertTaskArrayToJson(results)}" 
       };
     });
   }
