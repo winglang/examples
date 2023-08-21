@@ -21,7 +21,7 @@ let recentStockPriceCache = new cloud.Counter(
   initial: 0
 );
 
-let stockUpdatesQueue = new cloud.Queue("stock-updates-queue");
+let stockUpdatesQueue = new cloud.Queue();
 let twelveDataApi = new TwelveDataApi();
 
 let stockUpdatesFetchSchedule = new cloud.Schedule(rate: 2m);       // Twelve Data free tier gives you 800 API credits per day. So with a rate of 2 minutes, you use 720 API credits per day
