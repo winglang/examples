@@ -16,11 +16,11 @@ templates.addObject("index.html", Utils.readFile("./index.html"));
 let counter = new cloud.Counter();
 let api = new cloud.Api();
 
-api.get("/", inflight (req: cloud.ApiRequest): cloud.ApiResponse => {
+api.get("/", inflight (req) => {
   let count = counter.inc();
   let rendered = Utils.render(templates.get("index.html"), count);
 
-  return cloud.ApiResponse {
+  return {
     status: 200,
     headers: {
       "Content-Type" => "text/html"

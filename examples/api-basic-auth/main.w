@@ -77,11 +77,11 @@ class BasicAuth {
 let auth = new BasicAuth();
 let api = new cloud.Api();
 
-api.get("/hello", inflight (req: cloud.ApiRequest): cloud.ApiResponse => {
+api.get("/hello", inflight (req) => {
   let authenticated = auth.call(req);
 
   if (!authenticated) {
-    return cloud.ApiResponse {
+    return {
       status: 401,
       headers: {
         "Content-Type" => "text/plain"
@@ -90,7 +90,7 @@ api.get("/hello", inflight (req: cloud.ApiRequest): cloud.ApiResponse => {
     };
   }
 
-  return cloud.ApiResponse {
+  return {
     status: 200,
     headers: {
       "Content-Type" => "text/plain"

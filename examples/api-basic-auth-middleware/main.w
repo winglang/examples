@@ -100,8 +100,8 @@ let authenticatedMiddleware = (handler: inflight (cloud.ApiRequest): cloud.ApiRe
   return middleware;
 };
 
-api.get("/hello-middleware", authenticatedMiddleware(inflight (request: cloud.ApiRequest): cloud.ApiResponse => {
-  return cloud.ApiResponse {
+api.get("/hello-middleware", authenticatedMiddleware(inflight (request) => {
+  return {
     status: 200,
     headers: {
       "Content-Type" => "text/plain"
