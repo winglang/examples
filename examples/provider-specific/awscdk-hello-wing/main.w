@@ -4,7 +4,7 @@ bring util;
 let bucket = new cloud.Bucket();
 let queue = new cloud.Queue();
 
-queue.setConsumer(inflight (message: str) => {
+queue.setConsumer(inflight (message) => {
   bucket.put("wing.txt", "Hello, ${message}");
 }, timeout: 1s);
 
@@ -13,7 +13,7 @@ queue.setConsumer(inflight (message: str) => {
 test "Hello, world!" {
   queue.push("world!");
 
-  let found = util.waitUntil((): bool => {
+  let found = util.waitUntil(() => {
     return bucket.exists("wing.txt");
   });
 
