@@ -3,7 +3,7 @@ const path = require('path')
 const Handlebars = require('handlebars')
 
 const readFile = function(filePath) {
-  const resolvedFilePath = path.join(process.env.WING_SOURCE_DIR, filePath);
+  const resolvedFilePath = path.join(process.cwd(), filePath);
   return fs.readFileSync(resolvedFilePath, 'utf-8');
 }
 
