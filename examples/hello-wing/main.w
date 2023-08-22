@@ -4,14 +4,14 @@ bring util;
 let bucket = new cloud.Bucket();
 let queue = new cloud.Queue();
 
-queue.setConsumer(inflight (message: str) => {
+queue.setConsumer(inflight (message) => {
   bucket.put("wing.txt", "Hello, ${message}");
 }, timeout: 3s);
 
 test "Hello, world!" {
   queue.push("world!");
 
-  let found = util.waitUntil((): bool => {
+  let found = util.waitUntil(() => {
     log("Checking if wing.txt exists");
     return bucket.exists("wing.txt");
   });

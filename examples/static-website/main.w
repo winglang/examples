@@ -22,8 +22,8 @@ let corsHandler = inflight(req: cloud.ApiRequest): cloud.ApiResponse => {
   };
 };
 api.options("/hello-static", corsHandler);
-api.post("/hello-static", inflight (request: cloud.ApiRequest): cloud.ApiResponse => {
-  return cloud.ApiResponse {
+api.post("/hello-static", inflight (request) => {
+  return {
     status: 200,
     headers: {
       "Content-Type" => "text/html",
