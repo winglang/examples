@@ -1,0 +1,14 @@
+{
+  "name": "redis",
+  "version": "1.0.0",
+  "description": "The example is using Redis from the [external SDK](https://www.winglang.io/docs/standard-library/ex/api-reference#redis-)",
+  "main": "utils.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "uuid": "^9.0.0"
+  }
+}
