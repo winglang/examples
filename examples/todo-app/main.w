@@ -3,9 +3,6 @@ bring ex;
 bring util;
 bring http;
 
-//TODO: need to fix:
-// 1. when the list is empty, get fails
-
 enum Status {
   PENDING, COMPLETED
 }
@@ -177,13 +174,13 @@ class TaskApi {
     this.api = new cloud.Api();
     this.taskStorage = new TaskStorage();
     
-    this.api.options("/tasks", inflight(req: cloud.ApiRequest): cloud.ApiResponse => {
+    this.api.options("/tasks", inflight(req): cloud.ApiResponse => {
       return cloud.ApiResponse {
         headers: optionsTasksRouteAPICORSHeadersMap,
         status: 204
       };
     });
-    this.api.options("/tasks/{id}", inflight(req: cloud.ApiRequest): cloud.ApiResponse => {
+    this.api.options("/tasks/{id}", inflight(req): cloud.ApiResponse => {
       return cloud.ApiResponse {
         headers: optionsTasksIdRouteAPICORSHeadersMap,
         status: 204
@@ -191,7 +188,7 @@ class TaskApi {
     });
     
     // API endpoints
-    this.api.post("/tasks", inflight (req: cloud.ApiRequest): cloud.ApiResponse => {
+    this.api.post("/tasks", inflight (req): cloud.ApiResponse => {
       if let body = req.body {
         let var description = Json.parse(body).get("description").asStr();
         // Easter Egg - if you add a task with the single word "random" as the description, 
@@ -218,7 +215,7 @@ class TaskApi {
       }
     });
         
-    this.api.put("/tasks/{id}", inflight (req: cloud.ApiRequest): cloud.ApiResponse => {
+    this.api.put("/tasks/{id}", inflight (req): cloud.ApiResponse => {
       if let body = req.body {
         let id = req.vars.get("id");
         if Json.parse(body).get("status").asStr() == "COMPLETED" {
@@ -248,7 +245,7 @@ class TaskApi {
       }
     });
 
-    this.api.get("/tasks/{id}", inflight (req: cloud.ApiRequest): cloud.ApiResponse => {
+    this.api.get("/tasks/{id}", inflight (req): cloud.ApiResponse => {
       let id = req.vars.get("id");
       try {
         if let taskJson = this.taskStorage.get(id) {
@@ -256,6 +253,12 @@ class TaskApi {
             headers: getAPICORSHeadersMap, 
             status:200, 
             body: "${Json taskJson}"
+          };
+        }
+        else {
+          return cloud.ApiResponse { 
+            headers: getAPICORSHeadersMap, 
+            status:404, 
           };
         }
       } catch {
@@ -266,7 +269,7 @@ class TaskApi {
       }
     });
     
-    this.api.delete("/tasks/{id}", inflight (req: cloud.ApiRequest): cloud.ApiResponse => {
+    this.api.delete("/tasks/{id}", inflight (req): cloud.ApiResponse => {
       let id = req.vars.get("id");
       try {
         this.taskStorage.remove(id);
@@ -281,7 +284,7 @@ class TaskApi {
       }
     });
 
-    this.api.get("/tasks", inflight (req: cloud.ApiRequest): cloud.ApiResponse => {
+    this.api.get("/tasks", inflight (req): cloud.ApiResponse => {
       let search = req.query.get("search");
       let results = this.taskStorage.find(this.createRegex(search));
       return cloud.ApiResponse { 
