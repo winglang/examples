@@ -210,7 +210,6 @@ class TaskApi {
         return cloud.ApiResponse { 
           headers: postAPICORSHeadersMap,
           status: 400,
-          body: "Missing body"
         };
       }
     });
