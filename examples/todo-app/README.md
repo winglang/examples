@@ -27,3 +27,5 @@ Exposes a REST based API to manage the list.
 1. Uses an `ex.Redis` resource to store the tasks.
 2. Uses a `cloud.API` resource to expose the REST API.
 3. Uses an external javascript file `tasklist_helper.js` to utilize regular expressions.
+
+![Wing Console screenshot](image.png)
