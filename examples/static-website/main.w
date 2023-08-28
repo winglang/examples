@@ -11,8 +11,8 @@ website.addJson("config.json", { api: api.url });
 
 let counter = new cloud.Counter() as "website-counter";
 
-let corsHandler = inflight(req: cloud.ApiRequest): cloud.ApiResponse => {
-  return cloud.ApiResponse {
+let corsHandler = inflight(req) => {
+  return {
     headers: {
       "Access-Control-Allow-Headers" => "*",
       "Access-Control-Allow-Origin" => "*",
@@ -33,26 +33,16 @@ api.post("/hello-static", inflight (request) => {
   };
 });
 
-// workaround for https://github.com/winglang/wing/issues/3289
-// this shouldn't be necessary, since api.url should
-// be directly accessible  in the test
-let apiUrl = api.url;
-
-// However, while this worked for API, it doesn't work for
-// the website.url property :/
-let websiteUrl = website.url;
-
 let invokeAndAssert = inflight(response: http.Response, expected: str) => {
   log("response: ${response.status} ");
   assert(response.status == 200);
   assert(response.body?.contains(expected) == true);
 };
 
-// Doesn't work right now
-// test "renders the index page" {
-//   invokeAndAssert(http.get(websiteUrl), "Hello, Wing");
-// }
+test "renders the index page" {
+  invokeAndAssert(http.get(website.url), "Hello, Wing");
+}
 
 test "api returns the correct response" {
-  invokeAndAssert(http.post("${apiUrl}/hello-static"), "Hello 0");
+  invokeAndAssert(http.post("${api.url}/hello-static"), "Hello 0");
 }
