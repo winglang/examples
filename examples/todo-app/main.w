@@ -58,12 +58,12 @@ let convertStatusEnumToStr = inflight (s: Status): str => {
 
 // Util method to convert Task array to JSON
 let convertTaskArrayToJson = inflight (taskArray: Array<Task>): Json => {
-  let jsonArray = MutJson {};
+  let jsonArray = MutJson [];
   let var i = 0;
   for task in taskArray {
     let j = Json task;
     jsonArray.setAt(i, j);
-    i = i + 1;
+    i += 1;
   }
   return jsonArray;
 };
