@@ -68,37 +68,6 @@ let convertTaskArrayToJson = inflight (taskArray: Array<Task>): Json => {
   return jsonArray;
 };
 
-// Constants - bolierplate code to enable CORS - see https://github.com/winglang/wing/issues/2289
-let optionsTasksRouteAPICORSHeadersMap = {
-  "Access-Control-Allow-Headers" => "Content-Type",
-  "Access-Control-Allow-Origin" => "*",
-  "Access-Control-Allow-Methods" => "OPTIONS,POST,GET"
-};
-let optionsTasksIdRouteAPICORSHeadersMap = {
-  "Access-Control-Allow-Headers" => "Content-Type",
-  "Access-Control-Allow-Origin" => "*",
-  "Access-Control-Allow-Methods" => "OPTIONS,GET,PUT,DELETE"
-};
-let postAPICORSHeadersMap = {
-  "Access-Control-Allow-Headers" => "Content-Type",
-  "Access-Control-Allow-Origin" => "*",
-  "Access-Control-Allow-Methods" => "OPTIONS,POST"
-};
-let putAPICORSHeadersMap = {
-  "Access-Control-Allow-Headers" => "Content-Type",
-  "Access-Control-Allow-Origin" => "*",
-  "Access-Control-Allow-Methods" => "PUT"
-};
-let getAPICORSHeadersMap = {
-  "Access-Control-Allow-Headers" => "Content-Type",
-  "Access-Control-Allow-Origin" => "*",
-  "Access-Control-Allow-Methods" => "OPTIONS,GET"
-};
-let deleteAPICORSHeadersMap = {
-  "Access-Control-Allow-Headers" => "Content-Type",
-  "Access-Control-Allow-Origin" => "*",
-  "Access-Control-Allow-Methods" => "OPTIONS,DELETE"
-};
 /********************************************************************
  * } end of boilerplate code
  ********************************************************************/
@@ -125,7 +94,7 @@ class TaskStorage impl ITaskStorage {
       status: "PENDING"
     };
     this._add(id, taskJson);
-    log("adding task ${id} with data: ${taskJson}"); 
+    log("adding task ${id} with data: ${taskJson}");
     return id;
   }
 
@@ -149,8 +118,8 @@ class TaskStorage impl ITaskStorage {
     }
   }
 
-  inflight find(r: IMyRegExp): Array<Task> { 
-    let result = MutArray<Task>[]; 
+  inflight find(r: IMyRegExp): Array<Task> {
+    let result = MutArray<Task>[];
     let ids = this.db.smembers("tasks");
     for id in ids {
       if let taskJsonStr = this.db.get(id) {
@@ -170,28 +139,15 @@ class TaskApi {
 
   extern "./tasklist_helper.js" static inflight createRegex(s: str): IMyRegExp;
 
-  init() {
-    this.api = new cloud.Api();
-    this.taskStorage = new TaskStorage();
-    
-    this.api.options("/tasks", inflight(req): cloud.ApiResponse => {
-      return cloud.ApiResponse {
-        headers: optionsTasksRouteAPICORSHeadersMap,
-        status: 204
-      };
-    });
-    this.api.options("/tasks/{id}", inflight(req): cloud.ApiResponse => {
-      return cloud.ApiResponse {
-        headers: optionsTasksIdRouteAPICORSHeadersMap,
-        status: 204
-      };
-    });
-    
+  init(storage: ITaskStorage) {
+    this.api = new cloud.Api(cors: true);
+    this.taskStorage = storage;
+
     // API endpoints
     this.api.post("/tasks", inflight (req): cloud.ApiResponse => {
       if let body = req.body {
         let var description = Json.parse(body).get("description").asStr();
-        // Easter Egg - if you add a task with the single word "random" as the description, 
+        // Easter Egg - if you add a task with the single word "random" as the description,
         //              the system will fetch a random task from the internet
         if description == "random" {
           let response = http.get("https://www.boredapi.com/api/activity");
@@ -199,21 +155,19 @@ class TaskApi {
             let body = Json.parse(responseBody);
             description = str.fromJson(body.get("activity"));
           }
-        } 
+        }
         let id = this.taskStorage.add(description);
-        return cloud.ApiResponse { 
-          headers: postAPICORSHeadersMap,
-          status:201, 
+        return cloud.ApiResponse {
+          status:201,
           body: id
         };
       } else {
-        return cloud.ApiResponse { 
-          headers: postAPICORSHeadersMap,
+        return cloud.ApiResponse {
           status: 400,
         };
       }
     });
-        
+
     this.api.put("/tasks/{id}", inflight (req): cloud.ApiResponse => {
       if let body = req.body {
         let id = req.vars.get("id");
@@ -224,22 +178,19 @@ class TaskApi {
         }
         try {
           if let taskJson = this.taskStorage.get(id) {
-            return cloud.ApiResponse { 
-              headers: putAPICORSHeadersMap,
-              status:200, 
+            return cloud.ApiResponse {
+              status:200,
               body: "${Json taskJson}"
             };
           }
         } catch {
-          return cloud.ApiResponse { 
-            headers: putAPICORSHeadersMap,
-            status: 400 
+          return cloud.ApiResponse {
+            status: 400
           };
         }
       } else {
-        return cloud.ApiResponse { 
-          headers: putAPICORSHeadersMap,
-          status: 400 
+        return cloud.ApiResponse {
+          status: 400
         };
       }
     });
@@ -248,37 +199,32 @@ class TaskApi {
       let id = req.vars.get("id");
       try {
         if let taskJson = this.taskStorage.get(id) {
-          return cloud.ApiResponse { 
-            headers: getAPICORSHeadersMap, 
-            status:200, 
+          return cloud.ApiResponse {
+            status:200,
             body: "${Json taskJson}"
           };
         }
         else {
-          return cloud.ApiResponse { 
-            headers: getAPICORSHeadersMap, 
-            status:404, 
+          return cloud.ApiResponse {
+            status:404,
           };
         }
       } catch {
-        return cloud.ApiResponse { 
-          headers: getAPICORSHeadersMap, 
-          status: 400 
+        return cloud.ApiResponse {
+          status: 400
         };
       }
     });
-    
+
     this.api.delete("/tasks/{id}", inflight (req): cloud.ApiResponse => {
       let id = req.vars.get("id");
       try {
         this.taskStorage.remove(id);
-        return cloud.ApiResponse { 
-          headers: deleteAPICORSHeadersMap,
+        return cloud.ApiResponse {
           status: 204 };
       } catch {
-        return cloud.ApiResponse { 
-          headers: deleteAPICORSHeadersMap,
-          status: 400 
+        return cloud.ApiResponse {
+          status: 400
         };
       }
     });
@@ -286,13 +232,22 @@ class TaskApi {
     this.api.get("/tasks", inflight (req): cloud.ApiResponse => {
       let search = req.query.get("search");
       let results = this.taskStorage.find(TaskApi.createRegex(search));
-      return cloud.ApiResponse { 
-        headers: getAPICORSHeadersMap,  
-        status: 200, 
-        body: "${convertTaskArrayToJson(results)}" 
+      return cloud.ApiResponse {
+        status: 200,
+        body: "${convertTaskArrayToJson(results)}"
       };
     });
   }
 }
 
-let taskApi = new TaskApi();
+let storage = new TaskStorage();
+let taskApi = new TaskApi(storage);
+
+test "list tasks" {
+  storage.add("task 1");
+  let url = taskApi.api.url;
+  let response = http.get("${url}/tasks");
+  assert(response.status == 200);
+  assert(response.body == Json.stringify(Json{"0":{"id":"0","description":"task 1","status":"PENDING"}}));
+  assert(response.headers.get("access-control-allow-origin") == "*");
+}
