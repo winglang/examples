@@ -14,7 +14,7 @@ struct Task {
 }
 
 // Currently interfaces must explicitly extend std.IResource - see https://github.com/winglang/wing/issues/1961
-interface IMyRegExp extends std.IResource {
+interface IRegExp extends std.IResource {
   inflight test(s: str): bool;
 }
 
@@ -23,7 +23,7 @@ interface ITaskStorage extends std.IResource {
   inflight remove(id: str);
   inflight get(id: str): Task?;
   inflight setStatus(id: str, status: Status);
-  inflight find(r: IMyRegExp): Array<Task>;
+  inflight find(r: IRegExp): Array<Task>;
 }
 
 /********************************************************************
@@ -58,16 +58,15 @@ let convertStatusEnumToStr = inflight (s: Status): str => {
 
 // Util method to convert Task array to JSON
 let convertTaskArrayToJson = inflight (taskArray: Array<Task>): Json => {
-  let jsonArray = MutJson {};
+  let jsonArray = MutJson [];
   let var i = 0;
   for task in taskArray {
     let j = Json task;
     jsonArray.setAt(i, j);
-    i = i + 1;
+    i += 1;
   }
   return jsonArray;
 };
-
 /********************************************************************
  * } end of boilerplate code
  ********************************************************************/
@@ -118,7 +117,7 @@ class TaskStorage impl ITaskStorage {
     }
   }
 
-  inflight find(r: IMyRegExp): Array<Task> {
+  inflight find(r: IRegExp): Array<Task> {
     let result = MutArray<Task>[];
     let ids = this.db.smembers("tasks");
     for id in ids {
@@ -133,11 +132,11 @@ class TaskStorage impl ITaskStorage {
   }
 }
 
-class TaskApi {
+class TaskService {
   api: cloud.Api;
   taskStorage: ITaskStorage;
 
-  extern "./tasklist_helper.js" static inflight createRegex(s: str): IMyRegExp;
+  extern "./tasklist_helper.js" static inflight createRegex(s: str): IRegExp;
 
   init(storage: ITaskStorage) {
     this.api = new cloud.Api(cors: true);
@@ -157,12 +156,12 @@ class TaskApi {
           }
         }
         let id = this.taskStorage.add(description);
-        return cloud.ApiResponse {
+        return {
           status:201,
           body: id
         };
       } else {
-        return cloud.ApiResponse {
+        return {
           status: 400,
         };
       }
@@ -178,18 +177,18 @@ class TaskApi {
         }
         try {
           if let taskJson = this.taskStorage.get(id) {
-            return cloud.ApiResponse {
+            return {
               status:200,
               body: "${Json taskJson}"
             };
           }
         } catch {
-          return cloud.ApiResponse {
+          return {
             status: 400
           };
         }
       } else {
-        return cloud.ApiResponse {
+        return {
           status: 400
         };
       }
@@ -199,18 +198,18 @@ class TaskApi {
       let id = req.vars.get("id");
       try {
         if let taskJson = this.taskStorage.get(id) {
-          return cloud.ApiResponse {
+          return {
             status:200,
             body: "${Json taskJson}"
           };
         }
         else {
-          return cloud.ApiResponse {
+          return {
             status:404,
           };
         }
       } catch {
-        return cloud.ApiResponse {
+        return {
           status: 400
         };
       }
@@ -220,10 +219,10 @@ class TaskApi {
       let id = req.vars.get("id");
       try {
         this.taskStorage.remove(id);
-        return cloud.ApiResponse {
+        return {
           status: 204 };
       } catch {
-        return cloud.ApiResponse {
+        return {
           status: 400
         };
       }
@@ -231,8 +230,8 @@ class TaskApi {
 
     this.api.get("/tasks", inflight (req): cloud.ApiResponse => {
       let search = req.query.get("search");
-      let results = this.taskStorage.find(TaskApi.createRegex(search));
-      return cloud.ApiResponse {
+      let results = this.taskStorage.find(TaskService.createRegex(search));
+      return {
         status: 200,
         body: "${convertTaskArrayToJson(results)}"
       };
@@ -241,7 +240,7 @@ class TaskApi {
 }
 
 let storage = new TaskStorage();
-let taskApi = new TaskApi(storage);
+let taskApi = new TaskService(storage);
 
 test "list tasks" {
   storage.add("task 1");
