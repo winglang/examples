@@ -168,7 +168,7 @@ class TaskApi {
   api: cloud.Api;
   taskStorage: ITaskStorage;
 
-  extern "./tasklist_helper.js" inflight createRegex(s: str): IMyRegExp;
+  extern "./tasklist_helper.js" static inflight createRegex(s: str): IMyRegExp;
 
   init() {
     this.api = new cloud.Api();
@@ -285,7 +285,7 @@ class TaskApi {
 
     this.api.get("/tasks", inflight (req): cloud.ApiResponse => {
       let search = req.query.get("search");
-      let results = this.taskStorage.find(this.createRegex(search));
+      let results = this.taskStorage.find(TaskApi.createRegex(search));
       return cloud.ApiResponse { 
         headers: getAPICORSHeadersMap,  
         status: 200, 
