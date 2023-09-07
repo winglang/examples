@@ -14,7 +14,7 @@ struct Task {
 }
 
 // Currently interfaces must explicitly extend std.IResource - see https://github.com/winglang/wing/issues/1961
-interface IMyRegExp extends std.IResource {
+interface IRegExp extends std.IResource {
   inflight test(s: str): bool;
 }
 
@@ -23,7 +23,7 @@ interface ITaskStorage extends std.IResource {
   inflight remove(id: str);
   inflight get(id: str): Task?;
   inflight setStatus(id: str, status: Status);
-  inflight find(r: IMyRegExp): Array<Task>;
+  inflight find(r: IRegExp): Array<Task>;
 }
 
 /********************************************************************
@@ -58,46 +58,14 @@ let convertStatusEnumToStr = inflight (s: Status): str => {
 
 // Util method to convert Task array to JSON
 let convertTaskArrayToJson = inflight (taskArray: Array<Task>): Json => {
-  let jsonArray = MutJson {};
+  let jsonArray = MutJson [];
   let var i = 0;
   for task in taskArray {
     let j = Json task;
     jsonArray.setAt(i, j);
-    i = i + 1;
+    i += 1;
   }
   return jsonArray;
-};
-
-// Constants - bolierplate code to enable CORS - see https://github.com/winglang/wing/issues/2289
-let optionsTasksRouteAPICORSHeadersMap = {
-  "Access-Control-Allow-Headers" => "Content-Type",
-  "Access-Control-Allow-Origin" => "*",
-  "Access-Control-Allow-Methods" => "OPTIONS,POST,GET"
-};
-let optionsTasksIdRouteAPICORSHeadersMap = {
-  "Access-Control-Allow-Headers" => "Content-Type",
-  "Access-Control-Allow-Origin" => "*",
-  "Access-Control-Allow-Methods" => "OPTIONS,GET,PUT,DELETE"
-};
-let postAPICORSHeadersMap = {
-  "Access-Control-Allow-Headers" => "Content-Type",
-  "Access-Control-Allow-Origin" => "*",
-  "Access-Control-Allow-Methods" => "OPTIONS,POST"
-};
-let putAPICORSHeadersMap = {
-  "Access-Control-Allow-Headers" => "Content-Type",
-  "Access-Control-Allow-Origin" => "*",
-  "Access-Control-Allow-Methods" => "PUT"
-};
-let getAPICORSHeadersMap = {
-  "Access-Control-Allow-Headers" => "Content-Type",
-  "Access-Control-Allow-Origin" => "*",
-  "Access-Control-Allow-Methods" => "OPTIONS,GET"
-};
-let deleteAPICORSHeadersMap = {
-  "Access-Control-Allow-Headers" => "Content-Type",
-  "Access-Control-Allow-Origin" => "*",
-  "Access-Control-Allow-Methods" => "OPTIONS,DELETE"
 };
 /********************************************************************
  * } end of boilerplate code
@@ -149,7 +117,7 @@ class TaskStorage impl ITaskStorage {
     }
   }
 
-  inflight find(r: IMyRegExp): Array<Task> { 
+  inflight find(r: IRegExp): Array<Task> { 
     let result = MutArray<Task>[]; 
     let ids = this.db.smembers("tasks");
     for id in ids {
@@ -164,25 +132,23 @@ class TaskStorage impl ITaskStorage {
   }
 }
 
-class TaskApi {
+class TaskService {
   api: cloud.Api;
   taskStorage: ITaskStorage;
 
-  extern "./tasklist_helper.js" inflight createRegex(s: str): IMyRegExp;
+  extern "./tasklist_helper.js" static inflight createRegex(s: str): IRegExp;
 
   init() {
-    this.api = new cloud.Api();
+    this.api = new cloud.Api(cors: true);
     this.taskStorage = new TaskStorage();
     
     this.api.options("/tasks", inflight(req): cloud.ApiResponse => {
-      return cloud.ApiResponse {
-        headers: optionsTasksRouteAPICORSHeadersMap,
+      return {
         status: 204
       };
     });
     this.api.options("/tasks/{id}", inflight(req): cloud.ApiResponse => {
-      return cloud.ApiResponse {
-        headers: optionsTasksIdRouteAPICORSHeadersMap,
+      return {
         status: 204
       };
     });
@@ -201,14 +167,12 @@ class TaskApi {
           }
         } 
         let id = this.taskStorage.add(description);
-        return cloud.ApiResponse { 
-          headers: postAPICORSHeadersMap,
+        return { 
           status:201, 
           body: id
         };
       } else {
-        return cloud.ApiResponse { 
-          headers: postAPICORSHeadersMap,
+        return { 
           status: 400,
         };
       }
@@ -224,21 +188,18 @@ class TaskApi {
         }
         try {
           if let taskJson = this.taskStorage.get(id) {
-            return cloud.ApiResponse { 
-              headers: putAPICORSHeadersMap,
+            return { 
               status:200, 
               body: "${Json taskJson}"
             };
           }
         } catch {
-          return cloud.ApiResponse { 
-            headers: putAPICORSHeadersMap,
+          return { 
             status: 400 
           };
         }
       } else {
-        return cloud.ApiResponse { 
-          headers: putAPICORSHeadersMap,
+        return { 
           status: 400 
         };
       }
@@ -248,21 +209,18 @@ class TaskApi {
       let id = req.vars.get("id");
       try {
         if let taskJson = this.taskStorage.get(id) {
-          return cloud.ApiResponse { 
-            headers: getAPICORSHeadersMap, 
+          return { 
             status:200, 
             body: "${Json taskJson}"
           };
         }
         else {
-          return cloud.ApiResponse { 
-            headers: getAPICORSHeadersMap, 
+          return { 
             status:404, 
           };
         }
       } catch {
-        return cloud.ApiResponse { 
-          headers: getAPICORSHeadersMap, 
+        return { 
           status: 400 
         };
       }
@@ -272,12 +230,10 @@ class TaskApi {
       let id = req.vars.get("id");
       try {
         this.taskStorage.remove(id);
-        return cloud.ApiResponse { 
-          headers: deleteAPICORSHeadersMap,
+        return { 
           status: 204 };
       } catch {
-        return cloud.ApiResponse { 
-          headers: deleteAPICORSHeadersMap,
+        return { 
           status: 400 
         };
       }
@@ -285,9 +241,8 @@ class TaskApi {
 
     this.api.get("/tasks", inflight (req): cloud.ApiResponse => {
       let search = req.query.get("search");
-      let results = this.taskStorage.find(this.createRegex(search));
-      return cloud.ApiResponse { 
-        headers: getAPICORSHeadersMap,  
+      let results = this.taskStorage.find(TaskService.createRegex(search));
+      return { 
         status: 200, 
         body: "${convertTaskArrayToJson(results)}" 
       };
@@ -295,4 +250,4 @@ class TaskApi {
   }
 }
 
-let taskApi = new TaskApi();
+let taskService = new TaskService();
