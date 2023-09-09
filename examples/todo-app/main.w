@@ -93,7 +93,7 @@ class TaskStorage impl ITaskStorage {
       status: "PENDING"
     };
     this._add(id, taskJson);
-    log("adding task ${id} with data: ${taskJson}"); 
+    log("adding task ${id} with data: ${taskJson}");
     return id;
   }
 
@@ -117,8 +117,8 @@ class TaskStorage impl ITaskStorage {
     }
   }
 
-  inflight find(r: IRegExp): Array<Task> { 
-    let result = MutArray<Task>[]; 
+  inflight find(r: IRegExp): Array<Task> {
+    let result = MutArray<Task>[];
     let ids = this.db.smembers("tasks");
     for id in ids {
       if let taskJsonStr = this.db.get(id) {
@@ -138,26 +138,15 @@ class TaskService {
 
   extern "./tasklist_helper.js" static inflight createRegex(s: str): IRegExp;
 
-  init() {
+  init(storage: ITaskStorage) {
     this.api = new cloud.Api(cors: true);
-    this.taskStorage = new TaskStorage();
-    
-    this.api.options("/tasks", inflight(req): cloud.ApiResponse => {
-      return {
-        status: 204
-      };
-    });
-    this.api.options("/tasks/{id}", inflight(req): cloud.ApiResponse => {
-      return {
-        status: 204
-      };
-    });
-    
+    this.taskStorage = storage;
+
     // API endpoints
     this.api.post("/tasks", inflight (req): cloud.ApiResponse => {
       if let body = req.body {
         let var description = Json.parse(body).get("description").asStr();
-        // Easter Egg - if you add a task with the single word "random" as the description, 
+        // Easter Egg - if you add a task with the single word "random" as the description,
         //              the system will fetch a random task from the internet
         if description == "random" {
           let response = http.get("https://www.boredapi.com/api/activity");
@@ -165,19 +154,19 @@ class TaskService {
             let body = Json.parse(responseBody);
             description = str.fromJson(body.get("activity"));
           }
-        } 
+        }
         let id = this.taskStorage.add(description);
-        return { 
-          status:201, 
+        return {
+          status:201,
           body: id
         };
       } else {
-        return { 
+        return {
           status: 400,
         };
       }
     });
-        
+
     this.api.put("/tasks/{id}", inflight (req): cloud.ApiResponse => {
       if let body = req.body {
         let id = req.vars.get("id");
@@ -188,19 +177,19 @@ class TaskService {
         }
         try {
           if let taskJson = this.taskStorage.get(id) {
-            return { 
-              status:200, 
+            return {
+              status:200,
               body: "${Json taskJson}"
             };
           }
         } catch {
-          return { 
-            status: 400 
+          return {
+            status: 400
           };
         }
       } else {
-        return { 
-          status: 400 
+        return {
+          status: 400
         };
       }
     });
@@ -209,32 +198,32 @@ class TaskService {
       let id = req.vars.get("id");
       try {
         if let taskJson = this.taskStorage.get(id) {
-          return { 
-            status:200, 
+          return {
+            status:200,
             body: "${Json taskJson}"
           };
         }
         else {
-          return { 
-            status:404, 
+          return {
+            status:404,
           };
         }
       } catch {
-        return { 
-          status: 400 
+        return {
+          status: 400
         };
       }
     });
-    
+
     this.api.delete("/tasks/{id}", inflight (req): cloud.ApiResponse => {
       let id = req.vars.get("id");
       try {
         this.taskStorage.remove(id);
-        return { 
+        return {
           status: 204 };
       } catch {
-        return { 
-          status: 400 
+        return {
+          status: 400
         };
       }
     });
@@ -242,12 +231,23 @@ class TaskService {
     this.api.get("/tasks", inflight (req): cloud.ApiResponse => {
       let search = req.query.get("search");
       let results = this.taskStorage.find(TaskService.createRegex(search));
-      return { 
-        status: 200, 
-        body: "${convertTaskArrayToJson(results)}" 
+      return {
+        status: 200,
+        body: "${convertTaskArrayToJson(results)}"
       };
     });
   }
 }
 
-let taskService = new TaskService();
+let storage = new TaskStorage();
+let taskApi = new TaskService(storage);
+
+test "list tasks" {
+  storage.add("task 1");
+  let url = taskApi.api.url;
+  let response = http.get("${url}/tasks");
+  log("response: ${Json.stringify(response.body)}");
+  assert(response.status == 200);
+  assert(response.body == Json.stringify(Json[{"id":"0","description":"task 1","status":"PENDING"}]));
+  assert(response.headers.get("access-control-allow-origin") == "*");
+}
