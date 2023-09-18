@@ -4,7 +4,7 @@ bring ex;
 let redis = new ex.Redis();
 
 class Utils {
-  extern "./utils.js" static inflight uuid(): str;  
+  extern "./utils.js" pub static inflight uuid(): str;  
 }
 
 new cloud.OnDeploy(inflight () => {
