@@ -85,7 +85,7 @@ class TaskStorage impl ITaskStorage {
     this.db.sadd("tasks", id);
   }
 
-  inflight add(description: str): str {
+  pub inflight add(description: str): str {
     let id = "${this.counter.inc()}";
     let taskJson = {
       id: id,
@@ -97,18 +97,18 @@ class TaskStorage impl ITaskStorage {
     return id;
   }
 
-  inflight remove(id: str) {
+  pub inflight remove(id: str) {
     this.db.del(id);
     log("removing task ${id}");
   }
 
-  inflight get(id: str): Task? {
+  pub inflight get(id: str): Task? {
     if let taskJson = this.db.get(id) {
       return Task.fromJson(Json.parse(taskJson));
     }
   }
 
-  inflight setStatus(id: str, status: Status) {
+  pub inflight setStatus(id: str, status: Status) {
     if let taskJsonStr = this.db.get(id) {
       let taskJson = Json.deepCopyMut(Json.parse(taskJsonStr));
       taskJson.set("status", convertStatusEnumToStr(status));
@@ -117,7 +117,7 @@ class TaskStorage impl ITaskStorage {
     }
   }
 
-  inflight find(r: IRegExp): Array<Task> {
+  pub inflight find(r: IRegExp): Array<Task> {
     let result = MutArray<Task>[];
     let ids = this.db.smembers("tasks");
     for id in ids {
@@ -133,7 +133,7 @@ class TaskStorage impl ITaskStorage {
 }
 
 class TaskService {
-  api: cloud.Api;
+  pub api: cloud.Api;
   taskStorage: ITaskStorage;
 
   extern "./tasklist_helper.js" static inflight createRegex(s: str): IRegExp;
