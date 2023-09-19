@@ -12,7 +12,7 @@ class TwelveDataApi {
         );
     }
 
-    inflight stockUpdates(tickerSymbol: str): http.Response {
+    pub inflight stockUpdates(tickerSymbol: str): http.Response {
         return http.get("https://api.twelvedata.com/time_series?symbol=${tickerSymbol}&interval=1min&outputsize=1&apikey=${this.key.value()}");
     }
 }
