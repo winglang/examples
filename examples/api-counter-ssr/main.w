@@ -3,10 +3,10 @@ bring util;
 bring http;
 
 class Utils {
-  extern "./utils.js" static inflight render(template: str, value: num): str;
+  extern "./utils.js" pub static inflight render(template: str, value: num): str;
   // This is a workaround for the pending fs module
   // https://github.com/winglang/wing/issues/3096
-  extern "./utils.js" static readFile(filePath: str): str;
+  extern "./utils.js" pub static readFile(filePath: str): str;
   init() { }
 }
 

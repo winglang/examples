@@ -3,8 +3,8 @@ bring util;
 bring http;
 
 class Utils {
-  extern "./utils.js" static inflight base64decode(value: str): str;
-  extern "./utils.js" static inflight base64encode(value: str): str;
+  extern "./utils.js" pub static inflight base64decode(value: str): str;
+  extern "./utils.js" pub static inflight base64encode(value: str): str;
   init() { }
 }
 
@@ -22,7 +22,7 @@ class BasicAuth {
     this.password = password ?? "admin";
   }
 
-  inflight call(req: cloud.ApiRequest): bool {
+  pub inflight call(req: cloud.ApiRequest): bool {
     try {
       let authHeader = this.authHeader(req.headers);
       let credentials = this.authCredentials(authHeader);
@@ -35,7 +35,7 @@ class BasicAuth {
     }
   }
 
-  private inflight authCredentials(header: str): Credentials {
+  inflight authCredentials(header: str): Credentials {
     let auth = Utils.base64decode(header.split(" ").at(1));
     let splittedAuth = auth.split(":");
     let username = splittedAuth.at(0);
@@ -47,7 +47,7 @@ class BasicAuth {
     };
   }
   // workaround for https://github.com/winglang/wing/issues/3205
-  private inflight authHeader(headers: Map<str>?): str {
+  inflight authHeader(headers: Map<str>?): str {
     if (this.authHeaderPresent(headers)) {
       let authHeaderOptional = headers?.get("authorization");
       let var authHeader = headers?.get("Authorization");
@@ -66,7 +66,7 @@ class BasicAuth {
   }
 
   // workaround for https://github.com/winglang/wing/issues/3205
-  private inflight authHeaderPresent(headers: Map<str>?): bool {
+  inflight authHeaderPresent(headers: Map<str>?): bool {
     if (headers?.has("authorization") == false) && (headers?.has("Authorization") == false) {
       return false;
     }
