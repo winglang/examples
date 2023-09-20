@@ -112,10 +112,10 @@ jobs:
           role-session-name: gh-actions-winglang-examples
           aws-region: ${{ env.AWS_REGION }}
       - uses: marcofranssen/setup-iamlive@v1.0.0
-          with:
-            iamlive-version: v1.1.1
-            auto-capture: true
-            output-file: iamlive-policy.json
+        with:
+          iamlive-version: v1.1.1
+          auto-capture: true
+          output-file: iamlive-policy.json
       - name: Execute wing test in matrix directory
         if: env.skip == 'false'
         env:
