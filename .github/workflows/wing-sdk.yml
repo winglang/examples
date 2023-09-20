@@ -115,7 +115,7 @@ jobs:
         with:
           iamlive-version: v1.1.1
           auto-capture: true
-          output-file: iamlive-policy.json
+          output-file: ${{ matrix.example.name }}-iamlive-policy.json
       - name: Execute wing test in matrix directory
         if: env.skip == 'false'
         env:
