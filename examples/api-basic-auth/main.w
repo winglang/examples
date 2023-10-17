@@ -29,8 +29,8 @@ class BasicAuth {
       let username = credentials.username;
       let password = credentials.password;
       return username == this.user && password == this.password;
-    } catch {
-      log("exception caught - no auth header");
+    } catch e {
+      log("exception caught ${e}");
       return false;
     }
   }
@@ -49,8 +49,8 @@ class BasicAuth {
   // workaround for https://github.com/winglang/wing/issues/3205
   inflight authHeader(headers: Map<str>?): str {
     if (this.authHeaderPresent(headers)) {
-      let authHeaderOptional = headers?.get("authorization");
-      let var authHeader = headers?.get("Authorization");
+      let authHeaderOptional = headers?.tryGet("authorization");
+      let var authHeader = headers?.tryGet("Authorization");
 
       if (authHeader == nil) {
         authHeader = authHeaderOptional;
