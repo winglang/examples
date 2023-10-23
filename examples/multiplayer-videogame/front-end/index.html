@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Wingcloud Paintball</title>
+    <style>
+        body {
+            background: #000;
+            overflow: hidden;
+            margin: 0;
+        }
+
+        canvas {
+            width: 100%;
+            height: 100%;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: pixelated;
+        }
+    </style>
+</head>
+<body>
+<canvas id=c1></canvas>
+
+<!-- MVC -->
+<script src="./utils.js"></script>
+<script src="./controller.js"></script>
+<script src="./model.js"></script>
+<script src='./view.js'></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.3/socket.io.js"></script>
+<script src="./index.js"></script>
+</body>
+</html>
