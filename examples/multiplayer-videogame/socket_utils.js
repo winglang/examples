@@ -3,11 +3,17 @@
 const http = require('http');
 const express = require('express');
 const socketIO = require('socket.io');
-const app = express();
-const server = http.createServer(app);
-const PORT = 27326;
+const DEFAULT_PORT = 27326;
 
-function RunWebSocketServer() {
+const servers = {};
+
+function RunWebSocketServer(port) {
+
+    const app = express();
+    const server = http.createServer(app);
+
+    servers[port??DEFAULT_PORT] = server;
+
     try {
         const io = socketIO(server, {
             cors: {
@@ -36,15 +42,19 @@ function RunWebSocketServer() {
             });
         });
 
-        server.listen(PORT, () => {
-            console.log(`WebSocket server is running on port ${PORT}`);
+        server.listen(port??DEFAULT_PORT, () => {
+            console.log(`WebSocket server is running on port ${port??DEFAULT_PORT}`);
         });
     }catch (e) {
         console.log(e);
     }
 }
-function CloseWebSocketServer() {
-    server.close(() => {
+function CloseWebSocketServer(port) {
+    servers[port??DEFAULT_PORT]?.close((err) => {
+        if (err) {
+            console.log(err);
+            return;
+        }
         console.log('Server is closed.');
     });
 }

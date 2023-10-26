@@ -14,7 +14,7 @@ This is a multiplayer paintball game made with Wingcloud and VanillaJs.
 
 The infrastructure is composed by:
 - A [cloud.Website](https://www.winglang.io/docs/standard-library/cloud/website) to host the website
-- A [cloud.Service](https://www.winglang.io/docs/standard-library/cloud/secret) as a websocket broadcasting server
+- A [cloud.Service](https://www.winglang.io/docs/standard-library/cloud/service) as a websocket broadcasting server
 
 
 ## Next Steps
