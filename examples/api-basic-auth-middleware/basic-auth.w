@@ -1,17 +1,17 @@
 bring cloud;
 
-class Utils {
+pub class Utils {
   extern "./utils.js" pub static inflight base64decode(value: str): str;
   extern "./utils.js" pub static inflight base64encode(value: str): str;
   init() { }
 }
 
-struct Credentials {
+pub struct Credentials {
   username: str;
   password: str;
 }
 
-class BasicAuth {
+pub class BasicAuth {
   user: str;
   password: str;
 
