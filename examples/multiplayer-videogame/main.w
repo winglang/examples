@@ -38,7 +38,7 @@ let handler = inflight() => {
     };
 };
 
-let service = new cloud.Service(handler, autoStart: true) as "main lobby";
+let service = new cloud.Service(handler, autoStart: false) as "main lobby";
 
 // Unit tests:
 test "server should start" {
