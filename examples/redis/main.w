@@ -12,10 +12,8 @@ queue.setConsumer(inflight (message) => {
 
 test "Hello, world!" {
   queue.push("world!");
-
   util.waitUntil(() => {
-    log("Checking if redis key exists");
-    redis.get("hello") != nil;
+    return redis.get("hello") != nil;
   });
 
   expect.equal(redis.get("hello"), "world!");
