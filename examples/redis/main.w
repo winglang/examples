@@ -18,5 +18,5 @@ test "Hello, world!" {
     redis.get("hello") != nil;
   });
 
-  expect.equal(redis.get("hello", "world!"));
+  expect.equal(redis.get("hello"), "world!");
 }
