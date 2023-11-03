@@ -1,12 +1,7 @@
 bring cloud;
 bring util;
 bring http;
-
-class Utils {
-  extern "./utils.js" pub static inflight base64decode(value: str): str;
-  extern "./utils.js" pub static inflight base64encode(value: str): str;
-  init() { }
-}
+bring expect;
 
 struct Credentials {
   username: str;
@@ -36,7 +31,7 @@ class BasicAuth {
   }
 
   inflight authCredentials(header: str): Credentials {
-    let auth = Utils.base64decode(header.split(" ").at(1));
+    let auth = util.base64Decode(header.split(" ").at(1));
     let splittedAuth = auth.split(":");
     let username = splittedAuth.at(0);
     let password = splittedAuth.at(1);
@@ -106,16 +101,16 @@ let apiUrl = api.url;
 
 test "not authenticated" {
   let response = http.get("${apiUrl}/hello");
-  assert(response.status == 401);
+  expect.equal(response.status, 401);
 }
 
 test "authenticated" {
   let response = http.get("${apiUrl}/hello", {
     headers: {
       Accept: "application/json",
-      Authorization: "Basic " + Utils.base64encode("admin:admin")
+      Authorization: "Basic " + util.base64Encode("admin:admin")
     }
   });
-
-  assert(response.status == 200);
+  
+  expect.equal(response.status, 200);
 }

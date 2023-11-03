@@ -2,6 +2,7 @@ bring cloud;
 bring ex;
 bring util;
 bring http;
+bring expect;
 
 enum Status {
   PENDING, COMPLETED
@@ -247,7 +248,7 @@ test "list tasks" {
   let url = taskApi.api.url;
   let response = http.get("${url}/tasks?search=task");
   log("response: ${Json.stringify(response.body)}");
-  assert(response.status == 200);
-  assert(response.body == Json.stringify(Json[{"id":"0","description":"task 1","status":"PENDING"}]));
-  assert(response.headers.get("access-control-allow-origin") == "*");
+  expect.equal(response.status, 200);
+  expect.equal(response.body, Json.stringify(Json[{"id":"0","description":"task 1","status":"PENDING"}]));   
+  expect.equal(response.headers.get("access-control-allow-origin"), "*");
 }

@@ -1,6 +1,7 @@
 bring cloud;
 bring util;
 bring http;
+bring expect;
 
 let website = new cloud.Website(
   path: "./static",
@@ -30,7 +31,7 @@ api.post("/hello-static", inflight (request) => {
 
 let invokeAndAssert = inflight(response: http.Response, expected: str) => {
   log("response: ${response.status} ");
-  assert(response.status == 200);
+  expect.equal(response.status, 200);
   assert(response.body?.contains(expected) == true);
 };
 
@@ -50,9 +51,10 @@ test "api handles cors" {
       "hx-target" => "hello",
     },
   });
-  assert(response.status == 204);
+  expect.equal(response.status, 204);
   log("headers: ${Json.stringify(response.headers)}");
-  assert(response.headers.get("access-control-allow-headers") == "*");
-  assert(response.headers.get("access-control-allow-origin") == "*");
-  assert(response.headers.get("access-control-allow-methods") == "POST");
+  
+  expect.equal(response.headers.get("access-control-allow-headers"), "*");
+  expect.equal(response.headers.get("access-control-allow-origin"), "*");
+  expect.equal(response.headers.get("access-control-allow-methods"), "POST");
 }

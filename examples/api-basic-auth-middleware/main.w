@@ -1,6 +1,7 @@
 bring cloud;
 bring http;
 bring "./basic-auth.w" as auth;
+bring expect;
 
 let basicAuth = new auth.BasicAuth();
 
@@ -46,7 +47,7 @@ let apiUrl = api.url;
 
 test "not authenticated" {
   let response = http.get("${apiUrl}/hello-middleware");
-  assert(response.status == 401);
+  expect.equal(response.status, 401);
 }
 
 test "authenticated" {
@@ -56,6 +57,5 @@ test "authenticated" {
       Authorization: "Basic " + auth.Utils.base64encode("admin:admin")
     }
   });
-
-  assert(response.status == 200);
+  expect.equal(response.status, 200);  
 }

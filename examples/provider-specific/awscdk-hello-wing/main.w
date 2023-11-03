@@ -1,5 +1,6 @@
 bring cloud;
 bring util;
+bring expect;
 
 let bucket = new cloud.Bucket();
 let queue = new cloud.Queue();
@@ -17,5 +18,5 @@ test "Hello, world!" {
     return bucket.exists("wing.txt");
   });
 
-  assert("Hello, world!" == bucket.get("wing.txt"));
+  expect.equal(bucket.get("wing.txt"), "Hello, world");
 }
