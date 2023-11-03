@@ -114,7 +114,7 @@ jobs:
         env:
           TF_LOG: info
           TF_LOG_PATH: ${{ runner.workspace }}/terraform.log
-        run: cd ${{ matrix.example.directory }} && wing test --debug -t tf-aws main.w
+        run: cd ${{ matrix.example.directory }} && wing test --debug --no-analytics --no-update-check --platform tf-aws main.w
       - name: Output Terraform log
         if: failure()
         run: cat ${{ runner.workspace }}/terraform.log
