@@ -245,7 +245,7 @@ let taskApi = new TaskService(storage);
 test "list tasks" {
   storage.add("task 1");
   let url = taskApi.api.url;
-  let response = http.get("${url}/tasks");
+  let response = http.get("${url}/tasks?search=task");
   log("response: ${Json.stringify(response.body)}");
   assert(response.status == 200);
   assert(response.body == Json.stringify(Json[{"id":"0","description":"task 1","status":"PENDING"}]));
