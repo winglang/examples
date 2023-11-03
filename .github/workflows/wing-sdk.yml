@@ -67,7 +67,7 @@ jobs:
           mkdir -p ~/.wing
           echo '{}' > ~/.wing/secrets.json
       - name: Execute wing test in matrix directory
-        run: cd ${{ matrix.example.directory }} && wing test --debug main.w
+        run: cd ${{ matrix.example.directory }} && wing test --debug --platform sim main.w
 
   test-tf-aws:
     needs: setup
