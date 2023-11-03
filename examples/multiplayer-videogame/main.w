@@ -1,6 +1,7 @@
 bring cloud;
 bring util;
 bring ex;
+bring expect;
 
 let website = new cloud.Website(path: "./front-end");
 
@@ -52,28 +53,28 @@ test "server should not be restarted when already running" {
     service.start();
     service.start();
 
-    assert(lock.peek() == 1); // max 1 server
+    expect.equal(lock.peek(), 1); // max 1 server
     service.stop();
 }
 
 test "server should be stopped" {
     service.start();
-    assert(lock.peek() == 1);
+    expect.equal(lock.peek(), 1);
     service.stop();
-    assert(lock.peek() == 0);
+    expect.equal(lock.peek(), 0);
 }
 
 test "server should not be stopped when not running" {
     service.stop();
-    assert(lock.peek() == 0);
+    expect.equal(lock.peek(), 0);
 }
 
 test "server should be restarted after being stopped" {
     service.start();
-    assert(lock.peek() == 1);
+    expect.equal(lock.peek(), 1);
     service.stop();
-    assert(lock.peek() == 0);
+    expect.equal(lock.peek(), 0);
     service.start();
-    assert(lock.peek() == 1);
+    expect.equal(lock.peek(), 1);
     service.stop();
 }
