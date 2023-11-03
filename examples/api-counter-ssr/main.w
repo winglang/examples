@@ -1,6 +1,7 @@
 bring cloud;
 bring util;
 bring http;
+bring expect;
 
 class Utils {
   extern "./utils.js" pub static inflight render(template: str, value: num): str;
@@ -36,7 +37,7 @@ let apiUrl = api.url;
 
 let invokeAndAssert = inflight(url: str, expected: str) => {
   let response = http.get(url);
-  assert(response.status == 200);
+  expect.equal(response.status, 200);
   assert(response.body?.contains(expected) == true);
 };
 

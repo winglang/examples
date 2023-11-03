@@ -1,6 +1,7 @@
 bring cloud;
 bring ex;
 bring util;
+bring expect;
 
 let queue = new cloud.Queue();
 let redis = new ex.Redis();
@@ -17,5 +18,5 @@ test "Hello, world!" {
     redis.get("hello") != nil;
   });
 
-  assert("world!" == "${redis.get("hello")}");
+  expect.equal(redis.get("hello", "world!");
 }
