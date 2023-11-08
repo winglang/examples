@@ -33,3 +33,4 @@ For additional examples please go ahead and create a pull request in this reposi
 ## License 📜
 
 Wing is licensed under the [MIT License](./LICENSE). Contributions are made under our [contribution license](https://docs.winglang.io/terms-and-policies/contribution-license.html).
+
