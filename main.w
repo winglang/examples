@@ -39,9 +39,6 @@ api.get("/hello-middleware", authenticatedMiddleware(inflight (request) => {
   };
 }));
 
-// workaround for https://github.com/winglang/wing/issues/3289
-// this shouldn't be necessary, since api.url should
-// be directly accessible in the test
 let apiUrl = api.url;
 
 test "not authenticated" {
