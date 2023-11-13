@@ -31,19 +31,19 @@ let stockUpdatesPoller = stockUpdatesFetchSchedule.onTick(inflight () => {
   log("Status: ${stockUpdates.status}");
   log("Body: ${stockUpdates.body}");
 
-  if let stockUpdatesBody = stockUpdates.body {
-    log("Received this stock updates: ${stockUpdatesBody}");
+  let stockUpdatesBody = stockUpdates.body;
+  
+  log("Received this stock updates: ${stockUpdatesBody}");
 
-    let stockUpdatesBodyJson = Json.parse(stockUpdatesBody);
-    let latestStockPriceStr = stockUpdatesBodyJson.get("values").getAt(0).get("close").asStr();
-    let latestStockPrice = num.fromStr(latestStockPriceStr);
+  let stockUpdatesBodyJson = Json.parse(stockUpdatesBody);
+  let latestStockPriceStr = stockUpdatesBodyJson.get("values").getAt(0).get("close").asStr();
+  let latestStockPrice = num.fromStr(latestStockPriceStr);
 
-    let previousStockPrice = recentStockPriceCache.peek(tickerSymbol);
-    log("Stock price for ${tickerSymbol} changed from ${previousStockPrice} to ${latestStockPrice} with a difference of: ${latestStockPrice - previousStockPrice}");
+  let previousStockPrice = recentStockPriceCache.peek(tickerSymbol);
+  log("Stock price for ${tickerSymbol} changed from ${previousStockPrice} to ${latestStockPrice} with a difference of: ${latestStockPrice - previousStockPrice}");
 
-    recentStockPriceCache.set(latestStockPrice, tickerSymbol);
-    stockUpdatesQueue.push(stockUpdatesBody);
-  } else {
-    throw("Failed to parse stockUpdates body");
-  }
+  recentStockPriceCache.set(latestStockPrice, tickerSymbol);
+  stockUpdatesQueue.push(stockUpdatesBody);
+  
+    
 });
