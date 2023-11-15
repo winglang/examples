@@ -22,8 +22,6 @@ env:
 jobs:
   setup:
     runs-on: ubuntu-latest
-    outputs:
-      examples: ${{ steps.setdirs.outputs.dirs }}
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
@@ -34,7 +32,13 @@ jobs:
           dirs=$(ls -d examples/*/ | sed 's/\/$//' | grep -v "provider-specific" | jq -R -s -c 'split("\n")[:-1]')
           processed_dirs=$(echo "{ \"directory\": $dirs }" | jq -c '[ .directory[] | {directory: ., name: (split("/") | last)}]')
           wrapped_dirs=$(echo "{ \"example\": $processed_dirs }" | jq -c .)
-          echo "::set-output name=dirs::$wrapped_dirs"
+          echo "DIRS=$wrapped_dirs" >> $GITHUB_ENV
+      - name: Pass environment variable to output
+        id: passenv
+        run: |
+          echo "::set-output name=dirs::$DIRS"
+    outputs:
+      examples: ${{ steps.passenv.outputs.dirs }}
 
   test:
     needs: setup
@@ -52,30 +56,65 @@ jobs:
           node-version: 18
       - name: Install winglang globally
         run: npm install -g winglang
+      - name: Check for package.json file
+        run: |
+          if [[ -f "${{ matrix.example.directory }}/package.json" ]]; then
+            cd ${{ matrix.example.directory }}
+            npm install
+          fi
+      - name: Create ~/.wing/secrets.json
+        run: |
+          mkdir -p ~/.wing
+          echo '{}' > ~/.wing/secrets.json
       - name: Execute wing test in matrix directory
-        run: cd ${{ matrix.example.directory }} && wing test --debug main.w
+        run: cd ${{ matrix.example.directory }} && wing test --debug --platform sim main.w
 
   test-tf-aws:
     needs: setup
     runs-on: ubuntu-latest
     strategy:
+      max-parallel: 6
       fail-fast: false
       matrix: ${{ fromJson(needs.setup.outputs.examples) }}
     name: ${{ matrix.example.name }} (AWS)
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
+      - name: Check for skip.ci file
+        id: check_skip
+        run: |
+          if [[ -f "${{ matrix.example.directory }}/skip.ci.aws" ]]; then
+            echo "skip.ci file detected. Skipping job."
+            echo "skip=true" >> $GITHUB_ENV
+          else
+            echo "skip=false" >> $GITHUB_ENV
+          fi
       - name: Setup Node.js v18
         uses: actions/setup-node@v3
         with:
           node-version: 18
       - name: Install winglang globally
+        if: env.skip == 'false'
         run: npm install -g winglang
+      - name: Check for package.json file
+        run: |
+          if [[ -f "${{ matrix.example.directory }}/package.json" ]]; then
+            cd ${{ matrix.example.directory }}
+            npm install
+          fi
       - name: Configure AWS credentials
+        if: env.skip == 'false'
         uses: aws-actions/configure-aws-credentials@v2
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           role-session-name: gh-actions-winglang-examples
           aws-region: ${{ env.AWS_REGION }}
       - name: Execute wing test in matrix directory
-        run: cd ${{ matrix.example.directory }} && wing test --debug -t tf-aws main.w
+        if: env.skip == 'false'
+        env:
+          TF_LOG: info
+          TF_LOG_PATH: ${{ runner.workspace }}/terraform.log
+        run: cd ${{ matrix.example.directory }} && wing test --debug --no-analytics --no-update-check --platform tf-aws main.w
+      - name: Output Terraform log
+        if: failure()
+        run: cat ${{ runner.workspace }}/terraform.log

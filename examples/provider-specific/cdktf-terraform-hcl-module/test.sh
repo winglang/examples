@@ -2,4 +2,4 @@
 
 set -xeuo pipefail
 npm install
-wing test -t tf-aws main.w
+wing test --no-analytics --no-update-check --platform tf-aws main.w
