@@ -1,44 +1,39 @@
 import fetch from 'node-fetch';
-import { JSDOM } from 'jsdom';
-
-export async function parseFoo() {
-    return 'bar';
-}
+import { XMLParser, XMLBuilder } from 'fast-xml-parser';
 
 export async function parseAtomFeed() {
     const feedUrl = 'https://github.com/winglang/wing/releases.atom';
 
-    // Make GET request
-    const response = await fetch(feedUrl);
-    const data = await response.text();
+    let feed;
+    try {
+        // Make GET request and parse XML data
+        const response = await fetch(feedUrl);
+        const text = await response.text();
 
-    // Parse XML data
-    const dom = new JSDOM(data, { contentType: "application/xml" });
-    const document = dom.window.document;
-
-    // Extract feed data
-    const feed = {
-        id: document.querySelector('feed > id').textContent,
-        link: document.querySelector('feed > link[rel="alternate"]').getAttribute('href'),
-        title: document.querySelector('feed > title').textContent,
-        updated: document.querySelector('feed > updated').textContent,
+        const parser = new XMLParser();
+        feed = parser.parse(text);
+    } catch (error) {
+        console.error('Error parsing feed:', error);
+        return null;
     }
+    // Check if feed and its properties exist before extracting data
+    const feedData = feed ? {
+        id: feed.feed.id,
+        link: feed.feed.link && feed.feed.link[0].$ ? feed.feed.link[0].$.href : null,
+        title: feed.feed.title,
+        updated: feed.feed.updated,
+    } : null;
 
-    // Extract entries data
-    const entries = [];
-    const entryElements = document.querySelectorAll('feed > entry');
-    entryElements.forEach(entryElement => {
-        const entry = {
-            id: entryElement.querySelector('id').textContent,
-            updated: entryElement.querySelector('updated').textContent,
-            link: entryElement.querySelector('link[rel="alternate"]').getAttribute('href'),
-            title: entryElement.querySelector('title').textContent,
-            content: entryElement.querySelector('content').textContent,
-            author: entryElement.querySelector('author > name').textContent,
-            thumbnail: entryElement.querySelector('media\\:thumbnail').getAttribute('url'),
-        }
-        entries.push(entry);
-    });
+    // Check if feed items exist before extracting entries data
+    const entries = feed && feed.feed.entry ? feed.feed.entry.map(item => ({
+        id: item.id,
+        updated: item.updated,
+        link: item.link && item.link[0].$ && item.link[0].$.rel === 'alternate' ? item.link[0].$.href : null,
+        title: item.title,
+        content: item.content,
+    })) : null;
 
-    return {feed, entries};
+    console.log({entries, feedData, feed})
+
+    return {feed: feedData, entries};
 }
