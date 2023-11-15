@@ -33,7 +33,5 @@ export async function parseAtomFeed() {
         content: item.content,
     })) : null;
 
-    console.log({entries, feedData, feed})
-
     return {feed: feedData, entries};
 }
