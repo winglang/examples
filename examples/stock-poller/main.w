@@ -6,7 +6,7 @@ let tickerSymbol = "GME";
 class TwelveDataApi {
     key: cloud.Secret;
 
-    init() {
+    new() {
         this.key = new cloud.Secret(
           name: "twelve-data-api-key"
         );

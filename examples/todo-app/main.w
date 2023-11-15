@@ -76,7 +76,7 @@ class TaskStorage impl ITaskStorage {
   db: ex.Redis;
   counter: cloud.Counter;
 
-  init() {
+  new() {
     this.db = new ex.Redis();
     this.counter = new cloud.Counter();
   }
@@ -139,7 +139,7 @@ class TaskService {
 
   extern "./tasklist_helper.js" static inflight createRegex(s: str): IRegExp;
 
-  init(storage: ITaskStorage) {
+  new(storage: ITaskStorage) {
     this.api = new cloud.Api(cors: true);
     this.taskStorage = storage;
 
@@ -249,6 +249,6 @@ test "list tasks" {
   let response = http.get("${url}/tasks?search=task");
   log("response: ${Json.stringify(response.body)}");
   expect.equal(response.status, 200);
-  expect.equal(response.body, Json.stringify(Json[{"id":"0","description":"task 1","status":"PENDING"}]));   
+  expect.equal(response.body, Json.stringify(Json[{"id":"0","description":"task 1","status":"PENDING"}]));
   expect.equal(response.headers.get("access-control-allow-origin"), "*");
 }
