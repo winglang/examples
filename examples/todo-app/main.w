@@ -151,10 +151,8 @@ class TaskService {
         //              the system will fetch a random task from the internet
         if description == "random" {
           let response = http.get("https://www.boredapi.com/api/activity");
-          if let responseBody = response.body {
-            let body = Json.parse(responseBody);
-            description = str.fromJson(body.get("activity"));
-          }
+          let body = Json.parse(response.body);
+          description = str.fromJson(body.get("activity"));
         }
         let id = this.taskStorage.add(description);
         return {
