@@ -12,7 +12,7 @@ class BasicAuth {
   user: str;
   password: str;
 
-  init(user: str?, password: str?) {
+  new(user: str?, password: str?) {
     this.user = user ?? "admin";
     this.password = password ?? "admin";
   }
@@ -111,6 +111,6 @@ test "authenticated" {
       Authorization: "Basic " + util.base64Encode("admin:admin")
     }
   });
-  
+
   expect.equal(response.status, 200);
 }

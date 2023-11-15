@@ -8,7 +8,6 @@ let website = new cloud.Website(path: "./front-end");
 class Utils {
     extern "./socket_utils.js" pub static inflight RunWebSocketServer(port:num);
     extern "./socket_utils.js" pub static inflight CloseWebSocketServer(port:num);
-    init() { }
 }
 
 let lock = new cloud.Counter(
