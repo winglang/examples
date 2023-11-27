@@ -166,7 +166,7 @@ class TaskService {
       }
     });
 
-    this.api.put("/tasks/{id}", inflight (req): cloud.ApiResponse => {
+    this.api.put("/tasks/:id", inflight (req): cloud.ApiResponse => {
       if let body = req.body {
         let id = req.vars.get("id");
         if Json.parse(body).get("status").asStr() == "COMPLETED" {
@@ -193,7 +193,7 @@ class TaskService {
       }
     });
 
-    this.api.get("/tasks/{id}", inflight (req): cloud.ApiResponse => {
+    this.api.get("/tasks/:id", inflight (req): cloud.ApiResponse => {
       let id = req.vars.get("id");
       try {
         if let taskJson = this.taskStorage.get(id) {
@@ -214,7 +214,7 @@ class TaskService {
       }
     });
 
-    this.api.delete("/tasks/{id}", inflight (req): cloud.ApiResponse => {
+    this.api.delete("/tasks/:id", inflight (req): cloud.ApiResponse => {
       let id = req.vars.get("id");
       try {
         this.taskStorage.remove(id);
