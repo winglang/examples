@@ -15,6 +15,7 @@ This repo contains full examples, tested against the most recent releases of Win
 - [Redis](./examples/redis)
 - [S3 Backend](./examples/s3-backend)
 - [Terraform Backend](https://github.com/winglang/terraform-backend) (dedicated repository)
+- [React Website](./examples/react-website)
 
 ### Wing - Provider Specific
 
@@ -22,7 +23,6 @@ This repo contains full examples, tested against the most recent releases of Win
 - [AWS CDK Docker Function](./examples/provider-specific/awscdk-docker-python-lambda)
 - [Terraform Module](./examples/provider-specific/cdktf-terraform-hcl-module)
 - [Github AWS OIDC Setup](https://github.com/winglang/github-aws-oidc) (dedicated repository)
-
 
 ## Contributing 🤝
 
