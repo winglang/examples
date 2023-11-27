@@ -1,26 +1,32 @@
-### welcome to the react website example
+# React website example
 
-Inside of the `./website` folder you can find a basic react website.
-The only file we changed is `/src/app.js` - to demonstrate how the information created in wing can be used in the website.
+This is a [ReactApp](https://www.winglang.io/docs/standard-library/ex/react-app) example. 
 
-To start developing:
+![diagram](./diagram.png)
+
+Notice that `./website` is a basic react website, the only file we changed is `/src/app.js` (including `wing.js`) 
+
+## Dev mode
+
 `wing run examples/react-website/main.w`
+
 The command above will open both the simulator and react dev app on the browser.
 
-- Try to make some changes to the wing file and watch the react file changes!
+Try to make some changes to the wing file and watch the react file changes!
 
-Now, let's test on the sim platform:
+## Run on simulator when react is in dev mode
 
 `wing test examples/react-website/main.w`
 
 Done developing, let's build the website, still on the simulator:
 
-Add `useBuildCommand: true` to line 18
+## Run on simulator when react is in build mode
 
-and run:
+1. Add `useBuildCommand: true` to line 18
+2. run:
 `wing run examples/react-website/main.w`
-or
-`wing test examples/react-website/main.w`
+
+## Build on tf-aws
 
 Now, let's test it on tf-aws platform:
 
