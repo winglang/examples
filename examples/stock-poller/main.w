@@ -13,7 +13,7 @@ class TwelveDataApi {
     }
 
     pub inflight stockUpdates(tickerSymbol: str): http.Response {
-        return http.get("https://api.twelvedata.com/time_series?symbol=${tickerSymbol}&interval=1min&outputsize=1&apikey=${this.key.value()}");
+        return http.get("https://api.twelvedata.com/time_series?symbol={tickerSymbol}&interval=1min&outputsize=1&apikey={this.key.value()}");
     }
 }
 
@@ -28,22 +28,22 @@ let stockUpdatesFetchSchedule = new cloud.Schedule(rate: 2m);       // Twelve Da
 let stockUpdatesPoller = stockUpdatesFetchSchedule.onTick(inflight () => {
   let stockUpdates = twelveDataApi.stockUpdates(tickerSymbol);
 
-  log("Status: ${stockUpdates.status}");
-  log("Body: ${stockUpdates.body}");
+  log("Status: {stockUpdates.status}");
+  log("Body: {stockUpdates.body}");
 
   let stockUpdatesBody = stockUpdates.body;
-  
-  log("Received this stock updates: ${stockUpdatesBody}");
+
+  log("Received this stock updates: {stockUpdatesBody}");
 
   let stockUpdatesBodyJson = Json.parse(stockUpdatesBody);
   let latestStockPriceStr = stockUpdatesBodyJson.get("values").getAt(0).get("close").asStr();
   let latestStockPrice = num.fromStr(latestStockPriceStr);
 
   let previousStockPrice = recentStockPriceCache.peek(tickerSymbol);
-  log("Stock price for ${tickerSymbol} changed from ${previousStockPrice} to ${latestStockPrice} with a difference of: ${latestStockPrice - previousStockPrice}");
+  log("Stock price for {tickerSymbol} changed from {previousStockPrice} to {latestStockPrice} with a difference of: {latestStockPrice - previousStockPrice}");
 
   recentStockPriceCache.set(latestStockPrice, tickerSymbol);
   stockUpdatesQueue.push(stockUpdatesBody);
-  
-    
+
+
 });

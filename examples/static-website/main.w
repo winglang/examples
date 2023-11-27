@@ -25,12 +25,12 @@ api.post("/hello-static", inflight (request) => {
       "Content-Type" => "text/html",
       "Access-Control-Allow-Origin" => "*",
     },
-    body: "<div id=\"hello\" class=\"mt-4\">Hello ${counter.inc()}</div>",
+    body: "<div id=\"hello\" class=\"mt-4\">Hello {counter.inc()}</div>",
   };
 });
 
 let invokeAndAssert = inflight(response: http.Response, expected: str) => {
-  log("response: ${response.status} ");
+  log("response: {response.status} ");
   expect.equal(response.status, 200);
   assert(response.body?.contains(expected) == true);
 };
@@ -40,11 +40,11 @@ test "renders the index page" {
 }
 
 test "api returns the correct response" {
-  invokeAndAssert(http.post("${api.url}/hello-static"), "Hello 0");
+  invokeAndAssert(http.post("{api.url}/hello-static"), "Hello 0");
 }
 
 test "api handles cors" {
-  let response = http.fetch("${api.url}/hello-static", {
+  let response = http.fetch("{api.url}/hello-static", {
     method: http.HttpMethod.OPTIONS,
     headers: {
       "Origin" => "https://example.com",
@@ -52,8 +52,8 @@ test "api handles cors" {
     },
   });
   expect.equal(response.status, 204);
-  log("headers: ${Json.stringify(response.headers)}");
-  
+  log("headers: {Json.stringify(response.headers)}");
+
   expect.equal(response.headers.get("access-control-allow-headers"), "*");
   expect.equal(response.headers.get("access-control-allow-origin"), "*");
   expect.equal(response.headers.get("access-control-allow-methods"), "POST");
