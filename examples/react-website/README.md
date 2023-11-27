@@ -2,9 +2,7 @@
 
 This is a [ReactApp](https://www.winglang.io/docs/standard-library/ex/react-app) example. 
 
-![diagram](./diagram.png)
-
-Notice that `./website` is a basic react website, the only file we changed is `/src/app.js` (including `wing.js`) 
+Notice that `./website` is a basic react website, the only file we changed is `/src/app.js` (to include `wing.js`) 
 
 ## Dev mode
 
