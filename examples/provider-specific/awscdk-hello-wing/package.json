@@ -1,6 +1,6 @@
 {
   "dependencies": {
     "@winglang/platform-awscdk": "^0.51.0",
-    "aws-cdk": "^2.80.0"
+    "aws-cdk": "^2.111.0"
   }
 }
