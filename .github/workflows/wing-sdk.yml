@@ -56,7 +56,9 @@ jobs:
         with:
           node-version: 18
       - name: Install winglang globally
-        run: npm install -g winglang
+        run: |
+          npm install -g winglang@latest
+          wing --version
       - name: Check for package.json file
         run: |
           if [[ -f "${{ matrix.example.directory }}/package.json" ]]; then
@@ -96,7 +98,9 @@ jobs:
           node-version: 18
       - name: Install winglang globally
         if: env.skip == 'false'
-        run: npm install -g winglang
+        run: |
+          npm install -g winglang@latest
+          wing --version
       - name: Check for package.json file
         run: |
           if [[ -f "${{ matrix.example.directory }}/package.json" ]]; then
