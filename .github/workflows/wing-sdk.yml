@@ -65,6 +65,12 @@ jobs:
             cd ${{ matrix.example.directory }}
             npm install
           fi
+      - name: Check for setup.sh file
+        run: |
+          if [[ -f "${{ matrix.example.directory }}/setup.sh" ]]; then
+            cd ${{ matrix.example.directory }}
+            ./setup.sh
+          fi
       - name: Create ~/.wing/secrets.json
         run: |
           mkdir -p ~/.wing
@@ -106,6 +112,12 @@ jobs:
           if [[ -f "${{ matrix.example.directory }}/package.json" ]]; then
             cd ${{ matrix.example.directory }}
             npm install
+          fi
+      - name: Check for setup.sh file
+        run: |
+          if [[ -f "${{ matrix.example.directory }}/setup.sh" ]]; then
+            cd ${{ matrix.example.directory }}
+            ./setup.sh
           fi
       - name: Configure AWS credentials
         if: env.skip == 'false'
