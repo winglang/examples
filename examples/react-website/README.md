@@ -6,7 +6,7 @@ Notice that `./website` is a basic react website, the only file we changed is `/
 
 ## Dev mode
 
-`wing run examples/react-website/main.w`
+`wing run examples/react-website/wing/main.w`
 
 The command above will open both the simulator and react dev app on the browser.
 
@@ -14,7 +14,7 @@ Try to make some changes to the wing file and watch the react file changes!
 
 ## Run on simulator when react is in dev mode
 
-`wing test examples/react-website/main.w`
+`wing test examples/react-website/wing/main.w`
 
 Done developing, let's build the website, still on the simulator:
 
@@ -22,19 +22,19 @@ Done developing, let's build the website, still on the simulator:
 
 1. Add `useBuildCommand: true` to line 18
 2. run:
-`wing run examples/react-website/main.w`
+`wing run examples/react-website/wing/main.w`
 
 ## Build on tf-aws
 
 Now, let's test it on tf-aws platform:
 
-`wing test -t tf-aws examples/react-website/main.w`
+`wing test -t tf-aws examples/react-website/wing/main.w`
 
 Great! Everything is working, now let's deploy to AWS:
 
-`wing compile -t tf-aws examples/react-website/main.w`
+`wing compile -t tf-aws examples/react-website/wing/main.w`
 
-then go to the `examples/react-website/target/main.tfaws` folder, and run:
+then go to the `examples/react-website/wing/target/main.tfaws` folder, and run:
 `terraform init`
 
 and
