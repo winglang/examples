@@ -40,7 +40,7 @@ let convertStrToStatusEnum = inflight (s: str): Status => {
     return Status.PENDING;
   }
   else {
-    throw("Unknown task status: ${s}");
+    throw("Unknown task status: {s}");
   }
 };
 
@@ -53,7 +53,7 @@ let convertStatusEnumToStr = inflight (s: Status): str => {
     return "PENDING";
   }
   else {
-    throw("Unknown task status: ${s}");
+    throw("Unknown task status: {s}");
   }
 };
 
@@ -87,20 +87,20 @@ class TaskStorage impl ITaskStorage {
   }
 
   pub inflight add(description: str): str {
-    let id = "${this.counter.inc()}";
+    let id = "{this.counter.inc()}";
     let taskJson = {
       id: id,
       description: description,
       status: "PENDING"
     };
     this._add(id, taskJson);
-    log("adding task ${id} with data: ${taskJson}");
+    log("adding task {id} with data: {taskJson}");
     return id;
   }
 
   pub inflight remove(id: str) {
     this.db.del(id);
-    log("removing task ${id}");
+    log("removing task {id}");
   }
 
   pub inflight get(id: str): Task? {
@@ -114,7 +114,7 @@ class TaskStorage impl ITaskStorage {
       let taskJson = Json.deepCopyMut(Json.parse(taskJsonStr));
       taskJson.set("status", convertStatusEnumToStr(status));
       this._add(id, taskJson);
-      log("setting status of task ${id} to ${status}");
+      log("setting status of task {id} to {status}");
     }
   }
 
@@ -166,7 +166,7 @@ class TaskService {
       }
     });
 
-    this.api.put("/tasks/{id}", inflight (req): cloud.ApiResponse => {
+    this.api.put("/tasks/:id", inflight (req): cloud.ApiResponse => {
       if let body = req.body {
         let id = req.vars.get("id");
         if Json.parse(body).get("status").asStr() == "COMPLETED" {
@@ -178,7 +178,7 @@ class TaskService {
           if let taskJson = this.taskStorage.get(id) {
             return {
               status:200,
-              body: "${Json taskJson}"
+              body: "{Json taskJson}"
             };
           }
         } catch {
@@ -193,13 +193,13 @@ class TaskService {
       }
     });
 
-    this.api.get("/tasks/{id}", inflight (req): cloud.ApiResponse => {
+    this.api.get("/tasks/:id", inflight (req): cloud.ApiResponse => {
       let id = req.vars.get("id");
       try {
         if let taskJson = this.taskStorage.get(id) {
           return {
             status:200,
-            body: "${Json taskJson}"
+            body: "{Json taskJson}"
           };
         }
         else {
@@ -214,7 +214,7 @@ class TaskService {
       }
     });
 
-    this.api.delete("/tasks/{id}", inflight (req): cloud.ApiResponse => {
+    this.api.delete("/tasks/:id", inflight (req): cloud.ApiResponse => {
       let id = req.vars.get("id");
       try {
         this.taskStorage.remove(id);
@@ -232,7 +232,7 @@ class TaskService {
       let results = this.taskStorage.find(TaskService.createRegex(search));
       return {
         status: 200,
-        body: "${convertTaskArrayToJson(results)}"
+        body: "{convertTaskArrayToJson(results)}"
       };
     });
   }
@@ -244,8 +244,8 @@ let taskApi = new TaskService(storage);
 test "list tasks" {
   storage.add("task 1");
   let url = taskApi.api.url;
-  let response = http.get("${url}/tasks?search=task");
-  log("response: ${Json.stringify(response.body)}");
+  let response = http.get("{url}/tasks?search=task");
+  log("response: {Json.stringify(response.body)}");
   expect.equal(response.status, 200);
   expect.equal(response.body, Json.stringify(Json[{"id":"0","description":"task 1","status":"PENDING"}]));
   expect.equal(response.headers.get("access-control-allow-origin"), "*");
