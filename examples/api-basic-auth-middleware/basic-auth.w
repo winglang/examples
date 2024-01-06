@@ -54,9 +54,9 @@ pub class BasicAuth {
       }
 
       // force cast to str from str?
-      return "${authHeader}";
+      return "{authHeader}";
     } else {
-      log("headers: ${Json.stringify(headers)}");
+      log("headers: {Json.stringify(headers)}");
       log("no auth header");
       throw("no auth header");
     }

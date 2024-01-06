@@ -25,7 +25,7 @@ class BasicAuth {
       let password = credentials.password;
       return username == this.user && password == this.password;
     } catch e {
-      log("exception caught ${e}");
+      log("exception caught {e}");
       return false;
     }
   }
@@ -52,9 +52,9 @@ class BasicAuth {
       }
 
       // force cast to str from str?
-      return "${authHeader}";
+      return "{authHeader}";
     } else {
-      log("headers: ${Json.stringify(headers)}");
+      log("headers: {Json.stringify(headers)}");
       log("no auth header");
       throw("no auth header");
     }
@@ -100,12 +100,12 @@ api.get("/hello", inflight (req) => {
 let apiUrl = api.url;
 
 test "not authenticated" {
-  let response = http.get("${apiUrl}/hello");
+  let response = http.get("{apiUrl}/hello");
   expect.equal(response.status, 401);
 }
 
 test "authenticated" {
-  let response = http.get("${apiUrl}/hello", {
+  let response = http.get("{apiUrl}/hello", {
     headers: {
       Accept: "application/json",
       Authorization: "Basic " + util.base64Encode("admin:admin")

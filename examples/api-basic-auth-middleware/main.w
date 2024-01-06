@@ -46,12 +46,12 @@ api.get("/hello-middleware", authenticatedMiddleware(inflight (request) => {
 let apiUrl = api.url;
 
 test "not authenticated" {
-  let response = http.get("${apiUrl}/hello-middleware");
+  let response = http.get("{apiUrl}/hello-middleware");
   expect.equal(response.status, 401);
 }
 
 test "authenticated" {
-  let response = http.get("${apiUrl}/hello-middleware", {
+  let response = http.get("{apiUrl}/hello-middleware", {
     headers: {
       Accept: "application/json",
       Authorization: "Basic " + auth.Utils.base64encode("admin:admin")
