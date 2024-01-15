@@ -1,9 +1,5 @@
 bring cloud;
-
-pub class Utils {
-  extern "./utils.js" pub static inflight base64decode(value: str): str;
-  extern "./utils.js" pub static inflight base64encode(value: str): str;
-}
+bring util;
 
 pub struct Credentials {
   username: str;
@@ -33,7 +29,7 @@ pub class BasicAuth {
   }
 
   inflight authCredentials(header: str): Credentials {
-    let auth = Utils.base64decode(header.split(" ").at(1));
+    let auth = util.base64Decode(header.split(" ").at(1));
     let splittedAuth = auth.split(":");
     let username = splittedAuth.at(0);
     let password = splittedAuth.at(1);

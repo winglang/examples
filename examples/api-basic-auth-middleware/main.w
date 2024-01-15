@@ -1,5 +1,6 @@
 bring cloud;
 bring http;
+bring util;
 bring "./basic-auth.w" as auth;
 bring expect;
 
@@ -62,7 +63,7 @@ test "authenticated" {
   let response = http.get("{api.apiUrl}/hello-middleware", {
     headers: {
       Accept: "application/json",
-      Authorization: "Basic " + auth.Utils.base64encode("admin:admin")
+      Authorization: "Basic " + util.base64Encode("admin:admin")
     }
   });
   expect.equal(response.status, 200);
