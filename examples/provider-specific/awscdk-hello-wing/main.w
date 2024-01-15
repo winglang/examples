@@ -18,5 +18,5 @@ test "Hello, world!" {
     return bucket.exists("wing.txt");
   });
 
-  expect.equal(bucket.get("wing.txt"), "Hello, world");
+  expect.equal(bucket.get("wing.txt"), "Hello, world!");
 }
