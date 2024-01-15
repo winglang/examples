@@ -19,6 +19,7 @@ permissions:
 
 env:
   AWS_REGION : "us-east-1"
+  WING_DISABLE_ANALYTICS: 1
 
 jobs:
   setup:
