@@ -77,6 +77,12 @@ jobs:
           echo '{}' > ~/.wing/secrets.json
       - name: Execute wing test in matrix directory
         run: cd ${{ matrix.example.directory }} && wing test --debug --platform sim main.w
+      - name: Setup tmate session
+        if: ${{ failure() }}
+        uses: mxschmitt/action-tmate@v3
+        with:
+          limit-access-to-actor: true
+
   test-tf-aws:
     needs: setup
     runs-on: ubuntu-latest
