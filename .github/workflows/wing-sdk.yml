@@ -77,7 +77,6 @@ jobs:
           echo '{}' > ~/.wing/secrets.json
       - name: Execute wing test in matrix directory
         run: cd ${{ matrix.example.directory }} && wing test --debug --platform sim main.w
-
   test-tf-aws:
     needs: setup
     runs-on: ubuntu-latest
