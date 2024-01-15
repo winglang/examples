@@ -28,6 +28,7 @@ test "reach host files" {
       http.get(website.url);
       return true;
     } catch err {
+      log("error {err}");
       return false;
     }
   }, util.WaitUntilProps {interval: 1s, timeout: 60s});
