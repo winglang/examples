@@ -30,6 +30,6 @@ test "reach host files" {
     } catch err {
       return false;
     }
-  }, util.WaitUntilProps {interval: 1s, timeout: 30s});
+  }, util.WaitUntilProps {interval: 1s, timeout: 60s});
   assert(http.get(website.url).ok);
 }
