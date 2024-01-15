@@ -13,7 +13,8 @@ api.get("/test", inflight (req) => {
 });
 
 let website = new ex.ReactApp(
-  projectPath: "./website"
+  projectPath: "./website",
+  localPort: 3002,
 );
 
 website.addEnvironment("REACT_APP_SERVER_URL",  api.url );
