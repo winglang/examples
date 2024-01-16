@@ -32,7 +32,6 @@ let stockUpdatesPoller = stockUpdatesFetchSchedule.onTick(inflight () => {
   log("Body: {stockUpdates.body}");
 
   let stockUpdatesBody = stockUpdates.body;
-  
   log("Received this stock updates: {stockUpdatesBody}");
 
   let stockUpdatesBodyJson = Json.parse(stockUpdatesBody);
@@ -44,6 +43,6 @@ let stockUpdatesPoller = stockUpdatesFetchSchedule.onTick(inflight () => {
 
   recentStockPriceCache.set(latestStockPrice, tickerSymbol);
   stockUpdatesQueue.push(stockUpdatesBody);
-  
-    
+
+
 });

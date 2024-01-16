@@ -53,7 +53,6 @@ test "api handles cors" {
   });
   expect.equal(response.status, 204);
   log("headers: {Json.stringify(response.headers)}");
-  
   expect.equal(response.headers.get("access-control-allow-headers"), "*");
   expect.equal(response.headers.get("access-control-allow-origin"), "*");
   expect.equal(response.headers.get("access-control-allow-methods"), "POST");

@@ -19,6 +19,8 @@ permissions:
 
 env:
   AWS_REGION : "us-east-1"
+  WING_DISABLE_ANALYTICS: 1
+  DEBUG: "wing:*"
 
 jobs:
   setup:
@@ -56,12 +58,20 @@ jobs:
         with:
           node-version: 18
       - name: Install winglang globally
-        run: npm install -g winglang
+        run: |
+          npm install -g winglang@latest
+          wing --version
       - name: Check for package.json file
         run: |
           if [[ -f "${{ matrix.example.directory }}/package.json" ]]; then
             cd ${{ matrix.example.directory }}
             npm install
+          fi
+      - name: Check for setup.sh file
+        run: |
+          if [[ -f "${{ matrix.example.directory }}/setup.sh" ]]; then
+            cd ${{ matrix.example.directory }}
+            ./setup.sh
           fi
       - name: Create ~/.wing/secrets.json
         run: |
@@ -96,12 +106,20 @@ jobs:
           node-version: 18
       - name: Install winglang globally
         if: env.skip == 'false'
-        run: npm install -g winglang
+        run: |
+          npm install -g winglang@latest
+          wing --version
       - name: Check for package.json file
         run: |
           if [[ -f "${{ matrix.example.directory }}/package.json" ]]; then
             cd ${{ matrix.example.directory }}
             npm install
+          fi
+      - name: Check for setup.sh file
+        run: |
+          if [[ -f "${{ matrix.example.directory }}/setup.sh" ]]; then
+            cd ${{ matrix.example.directory }}
+            ./setup.sh
           fi
       - name: Configure AWS credentials
         if: env.skip == 'false'
