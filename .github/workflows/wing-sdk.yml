@@ -7,7 +7,8 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
-  workflow_dispatch:
+  repository_dispatch:
+    types: [ feedreader ]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
