@@ -14,6 +14,7 @@ api.get("/test", inflight (req) => {
 
 let website = new ex.ReactApp(
   projectPath: "./website",
+  useBuildCommand: true,
   localPort: 3002,
 );
 
