@@ -16,4 +16,4 @@ function runAndKillAfter(command, args, duration) {
 }
 
 console.log('Starting process...');
-runAndKillAfter('react-scripts', ['start'], 60000); // 60000 milliseconds = 60 seconds
+runAndKillAfter('react-scripts', ['build'], 60000); // 60000 milliseconds = 60 seconds
