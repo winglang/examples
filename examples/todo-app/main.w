@@ -21,9 +21,9 @@ interface IRegExp extends std.IResource {
 
 interface ITaskStorage extends std.IResource {
   inflight add(description: str): str;
-  inflight remove(id: str);
+  inflight remove(id: str): void;
   inflight get(id: str): Task?;
-  inflight setStatus(id: str, status: Status);
+  inflight setStatus(id: str, status: Status): void;
   inflight find(r: IRegExp): Array<Task>;
 }
 
