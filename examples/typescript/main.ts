@@ -1,5 +1,4 @@
 import { cloud, lift, main, std } from "ts4w";
-import { equal } from "node:assert";
 
 main((app) => {
   let bucket = new cloud.Bucket(app, "Bucket");
