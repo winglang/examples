@@ -1,20 +1,19 @@
-import { cloud, lift, main, std } from "ts4w";
+import { cloud, lift, main } from "@wingcloud/framework";
+import { myServer } from "./my-ssr-framework";
+import assert from "node:assert";
 
-main((app) => {
-  let bucket = new cloud.Bucket(app, "Bucket");
+main((root, test) => {
+  let bucket = new cloud.Bucket(root, "Bucket");
 
   bucket.addObject("hello", "Hello World from lifted Bucket!");
 
-  new cloud.Function(app, "hello", lift({bucket}).inflight(async ({bucket}) => {
-    const { myServer } = require("/Users/sebastian/projects/wing-cloud/examples/examples/typescript/my-ssr-framework.ts");
+  new cloud.Function(root, "hello", lift({bucket}).inflight(async ({bucket}) => {
     const result = await myServer({bucket})
     return result;
   }));
 
-  new std.Test(app, "test", lift({bucket}).inflight(async ({bucket}) => {
-    const { equal } = require("node:assert");
-    const { myServer } = require("/Users/sebastian/projects/wing-cloud/examples/examples/typescript/my-ssr-framework.ts");
+  test("testing it works", lift({bucket}).inflight(async ({bucket}) => {
     const result = await myServer({bucket})
-    equal(result , "Hello World from lifted Bucket!");
+    assert.equal(result , "Hello World from lifted Bucket!");
   }))
 })

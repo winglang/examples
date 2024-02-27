@@ -13,6 +13,6 @@
   ],
   "license": "Apache-2.0",
   "dependencies": {
-    "ts4w": "^0.56.1"
+    "@wingcloud/framework": "^0.59.10"
   }
 }
