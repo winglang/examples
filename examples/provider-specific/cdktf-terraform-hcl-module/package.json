@@ -1,5 +1,5 @@
 {
   "dependencies": {
-    "cdktf": "^0.16.1"
+    "cdktf": "^0.20.2"
   }
 }

@@ -6,8 +6,8 @@ bring expect;
 let website = new cloud.Website(path: "./front-end");
 
 class Utils {
-    extern "./socket_utils.js" pub static inflight RunWebSocketServer(port:num);
-    extern "./socket_utils.js" pub static inflight CloseWebSocketServer(port:num);
+    extern "./socket_utils.js" pub static inflight RunWebSocketServer(port:num): void;
+    extern "./socket_utils.js" pub static inflight CloseWebSocketServer(port:num): void;
 }
 
 let lock = new cloud.Counter(
