@@ -80,7 +80,16 @@ jobs:
           mkdir -p ~/.wing
           echo '{}' > ~/.wing/secrets.json
       - name: Execute wing test in matrix directory
-        run: cd ${{ matrix.example.directory }} && wing test --debug --platform sim main.w
+        run: |
+          cd ${{ matrix.example.directory }}
+          if [ -f "main.w" ]; then
+            wing test --debug --platform sim main.w
+          elif [ -f "main.ts" ]; then
+            wing test --debug --platform sim main.ts
+          else
+            echo "No main.w or main.ts found"
+            exit 1
+          fi
 
   test-tf-aws:
     needs: setup
@@ -135,7 +144,16 @@ jobs:
         env:
           TF_LOG: info
           TF_LOG_PATH: ${{ runner.workspace }}/terraform.log
-        run: cd ${{ matrix.example.directory }} && wing test --debug --no-analytics --no-update-check --platform tf-aws main.w
+        run: |
+          cd ${{ matrix.example.directory }}
+          if [ -f "main.w" ]; then
+            wing test --debug --no-analytics --no-update-check --platform tf-aws main.w
+          elif [ -f "main.ts" ]; then
+            wing test --debug --no-analytics --no-update-check --platform tf-aws main.ts
+          else
+            echo "No main.w or main.ts found"
+            exit 1
+          fi
       - name: Output Terraform log
         if: failure()
         run: cat ${{ runner.workspace }}/terraform.log
