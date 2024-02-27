@@ -1,0 +1,19 @@
+{
+  "name": "wing-typescript-example",
+  "version": "0.0.1",
+  "description": "wing-typescript-example",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "wing",
+    "typescript",
+    "cloud"
+  ],
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@wingcloud/framework": "^0.59.10",
+    "hono": "^4.0.7"
+  }
+}
