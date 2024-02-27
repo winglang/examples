@@ -1,16 +1,14 @@
-/** @jsx jsx */
-/** @jsxImportSource hono/jsx */
 import { cloud } from "@wingcloud/framework";
 import { Hono } from "hono";
 import type { FC } from 'hono/jsx'
 
-export const myServer = async ({bucket}: { bucket: cloud.IBucketClient }) => {
+export const myServer = async ({ bucket }: { bucket: cloud.IBucketClient }) => {
   const file = await bucket.get("hello");
   console.log(file);
   return file;
 }
 
-const app = new Hono()
+export const app = new Hono()
 
 const Layout: FC = (props) => {
   return (
@@ -38,4 +36,6 @@ app.get('/', (c) => {
   return c.html(<Top messages={messages} />)
 })
 
-export default app
+app.get('/api', (c) => {
+  return c.json({ message: 'Hello World!' })
+})

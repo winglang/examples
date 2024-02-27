@@ -1,20 +1,5 @@
-import { cloud, inflight, main } from "@wingcloud/framework";
-import myServer from "./hono";
-
-const streamToString = async (stream: ReadableStream) => {
-  let reader = stream.getReader();
-  let decoder = new TextDecoder('utf-8');
-  let data = await reader.read();
-  let body = '';
-
-  while (!data.done) {
-    body += decoder.decode(data.value, {stream: true});
-    data = await reader.read();
-  }
-
-  body += decoder.decode(); // finish the stream
-  return body;
-}
+import { cloud, main, lift } from "@wingcloud/framework";
+import { app } from "./hono";
 
 main((root, test) => {
   let bucket = new cloud.Bucket(root, "Bucket");
@@ -23,22 +8,33 @@ main((root, test) => {
 
   const api = new cloud.Api(root, "api");
 
-  api.get("/api", inflight(async (ctx, req) => {
-    const requestInit: RequestInit = {
-      headers: req.headers,
-      method: req.method,
-    }
+  api.get(
+    "/api",
+    lift({ apiUrl: api.url }).inflight(async ({ apiUrl }, req) => {
+      const request = new Request(`${apiUrl}${req.path}`, {
+        headers: req.headers,
+        method: req.method,
+      });
+      const response = await app.fetch(request);
 
-    const request = new Request(`${api.url}/${req.path}`, requestInit);
-    const result = await myServer.fetch(request);
-    let headersRecord: Record<string, string> = {};
-    result.headers.forEach((value: any, name: any) => {
-      headersRecord[name] = value;
-    });
-    return {
-      status: result.status,
-      headers: headersRecord,
-      body: await streamToString(result.body)
-    }
-  })) ;
-})
+      let headers: Record<string, string> = {};
+      response.headers.forEach((value, name) => {
+        headers[name] = value;
+      });
+
+      return {
+        status: response.status,
+        headers,
+        body: await response.text(),
+      };
+    })
+  );
+
+  test(
+    "GET /api",
+    lift({ apiUrl: api.url }).inflight(async ({ apiUrl }) => {
+      const response = await fetch(`${apiUrl}/api`);
+      console.log(await response.text());
+    })
+  );
+});
