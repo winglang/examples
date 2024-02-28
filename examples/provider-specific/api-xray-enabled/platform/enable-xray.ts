@@ -22,6 +22,7 @@ export class EnableXray {
     const lambdaArchitecture = "arm64"
     const region = this.app.region;
     const version = "1-17-1:1"
+    // see https://aws-otel.github.io/docs/getting-started/lambda/lambda-js
     const lambdaLayer = `arn:aws:lambda:${region}:901920570463:layer:aws-otel-nodejs-${lambdaArchitecture}-ver-${version}`
     cloudFunction.addPolicyStatements({
       effect: Effect.ALLOW,
