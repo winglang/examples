@@ -39,3 +39,7 @@ app.get('/', (c) => {
 app.get('/api', (c) => {
   return c.json({ message: 'Hello World!' })
 })
+
+app.post('/api', (c) => {
+  return c.json({ message: 'Posted' })
+})
