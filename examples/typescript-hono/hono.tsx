@@ -8,7 +8,11 @@ export const myServer = async ({ bucket }: { bucket: cloud.IBucketClient }) => {
   return file;
 }
 
-export const app = new Hono()
+type Bindings = {
+  BUCKET: cloud.IBucketClient
+}
+
+export const app = new Hono<{ Bindings: Bindings }>();
 
 const Layout: FC = (props) => {
   return (
@@ -31,8 +35,9 @@ const Top: FC<{ messages: string[] }> = (props: { messages: string[] }) => {
   )
 }
 
-app.get('/', (c) => {
-  const messages = ['Good Morning', 'Good Evening', 'Good Night']
+app.get('/', async (c) => {
+  const bucket = c.env.BUCKET;
+  const messages = ['Good Morning', 'Good Evening', 'Good Night', await bucket.get('hello')]
   return c.html(<Top messages={messages} />)
 })
 

@@ -1,5 +1,5 @@
 import { cloud, main, lift } from "@wingcloud/framework";
-import { handleRequest } from "./mapper";
+import { apiRoute } from "./api-route";
 import { match } from "node:assert";
 
 main((root, test) => {
@@ -9,31 +9,15 @@ main((root, test) => {
 
   const api = new cloud.Api(root, "api");
 
-  const apiRoute = (path: string) => {
-    const liftedHandler = () => {
-      return lift({ apiUrl: api.url }).inflight(async ({ apiUrl }, req) => {
-        return handleRequest(apiUrl, req);
-      })
-    }
-
-    api.get(path, liftedHandler());
-    api.post(path, liftedHandler());
-    api.put(path, liftedHandler());
-    api.patch(path, liftedHandler());
-    api.delete(path, liftedHandler());
-    api.connect(path, liftedHandler());
-    api.options(path, liftedHandler());
-  }
-
-  apiRoute("/");
-  apiRoute("/api");
+  apiRoute(api, "/", { bucket });
+  apiRoute(api, "/api");
 
   test(
     "GET /",
     lift({ apiUrl: api.url }).inflight(async ({ apiUrl }) => {
       const response = await fetch(apiUrl);
       const text = await response.text();
-      match(text, /Good Morning/);
+      match(text, /Hello World from lifted Bucket/);
     })
   );
 

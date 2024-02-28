@@ -21,8 +21,8 @@ const mapResponse = async (res: Response): Promise<cloud.ApiResponse> => {
   };
 }
 
-export const handleRequest = async(url: string, request: cloud.ApiRequest): Promise<cloud.ApiResponse> => {
+export const handleRequest = async(url: string, request: cloud.ApiRequest, bucket?: cloud.Bucket): Promise<cloud.ApiResponse> => {
   const req = mapRequest(url, request);
-  const response = await app.fetch(req);
+  const response = await app.fetch(req, {BUCKET: bucket});
   return mapResponse(response);
 }
