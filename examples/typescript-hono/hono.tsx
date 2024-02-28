@@ -1,4 +1,4 @@
-import { cloud } from "@wingcloud/framework";
+import type { cloud } from "@wingcloud/framework";
 import { Hono } from "hono";
 import type { FC } from 'hono/jsx'
 
