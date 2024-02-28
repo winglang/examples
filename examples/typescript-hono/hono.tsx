@@ -2,12 +2,6 @@ import { cloud } from "@wingcloud/framework";
 import { Hono } from "hono";
 import type { FC } from 'hono/jsx'
 
-export const myServer = async ({ bucket }: { bucket: cloud.IBucketClient }) => {
-  const file = await bucket.get("hello");
-  console.log(file);
-  return file;
-}
-
 type Bindings = {
   BUCKET: cloud.IBucketClient
 }
