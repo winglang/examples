@@ -4,7 +4,7 @@ This repo contains full examples, tested against the most recent releases of Win
 
 ## Examples
 
-### Wing - Generic
+### Wing - Generic Winglang
 
 - [Hello Wing](./examples/hello-wing)
 - [HTTP Api Basic Auth](./examples/api-basic-auth/)
@@ -16,9 +16,17 @@ This repo contains full examples, tested against the most recent releases of Win
 - [S3 Backend](./examples/s3-backend)
 - [Terraform Backend](https://github.com/winglang/terraform-backend) (dedicated repository)
 - [React Website](./examples/react-website)
+- [Todo](./examples/todo/)
+- [Multiplayer Video Game](./examples/multiplayer-videogame/)
+
+### Wing - Typescript
+
+- [Minimal Typescript SDK Demo](./examples/typescript/)
+- [Typescript SDK meets HonoJS](./examples/typescript-hono/)
 
 ### Wing - Provider Specific
 
+- [Wing API with AWS Platform to enable X-Ray via Open Telemetry](./examples/provider-specific/api-xray-enabled)
 - [AWS CDK Hello World](./examples/provider-specific/awscdk-hello-wing)
 - [AWS CDK Docker Function](./examples/provider-specific/awscdk-docker-python-lambda)
 - [Terraform Module](./examples/provider-specific/cdktf-terraform-hcl-module)
