@@ -7,8 +7,8 @@ main((root, test) => {
 
   bucket.addObject("hello", "Hello World from lifted Bucket!");
 
-  new cloud.Function(root, "hello", lift({bucket}).inflight(async ({bucket}) => {
-    const result = await myServer({bucket})
+  new cloud.Function(root, "hello", lift({bucket}).inflight(async ({bucket: inflightBucket}) => {
+    const result = await myServer({bucket: inflightBucket})
     return result;
   }));
 
