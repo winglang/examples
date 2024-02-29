@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "@winglang/sdk": "^0.59.12",
+    "cdktf": "^0.20.4",
+    "constructs": "^10.3.0",
+    "typescript": "^5.3.3"
+  }
+}
