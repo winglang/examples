@@ -6,7 +6,15 @@ type Bindings = {
   BUCKET: cloud.IBucketClient
 }
 
-export const app = new Hono<{ Bindings: Bindings }>();
+const env = process.env.WING_TARGET; // Handle the /prod prefix from the API Gateway for tf-aws
+const basePath = env === 'tf-aws' ? '/prod/' : '';
+
+export const app = new Hono<{ Bindings: Bindings }>().basePath(basePath);
+
+app.use(async (c, next) => {
+  console.log(`[${c.req.method}] ${c.req.url} ${c.req.path} ${c.req.routePath} ${c.req.matchedRoutes}`)
+  await next()
+})
 
 const Layout: FC = (props) => {
   return (
