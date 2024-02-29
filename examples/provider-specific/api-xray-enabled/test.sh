@@ -2,4 +2,5 @@
 
 set -xeuo pipefail
 npm install
-wing test --no-analytics --no-update-check --platform tf-aws --platform ./platform.ts main.w
+npx tsc platform/index.ts
+wing test --no-analytics --no-update-check --platform tf-aws --platform ./platform/index.js main.w
