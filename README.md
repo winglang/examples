@@ -32,6 +32,10 @@ This repo contains full examples, tested against the most recent releases of Win
 - [Terraform Module](./examples/provider-specific/cdktf-terraform-hcl-module)
 - [Github AWS OIDC Setup](https://github.com/winglang/github-aws-oidc) (dedicated repository)
 
+### Wing - AI
+
+- [OpenAI Joker](./examples/openai-joker/)
+
 ## Contributing 🤝
 
 Want to help Wing take flight? Check out our [contribution](https://github.com/winglang/wing/blob/main/CONTRIBUTING.md) guide to learn how to set up a development environment and contribute to the project. We appreciate your support and look forward to learning and building together.
