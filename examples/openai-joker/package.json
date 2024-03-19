@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "@winglibs/openai": "^0.0.1",
+    "openai": "^4.28.4"
+  }
+}

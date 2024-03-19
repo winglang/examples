@@ -3,3 +3,4 @@ target
 outputs.json
 
 ./react-website/target/*
+.history/
