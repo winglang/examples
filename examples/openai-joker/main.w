@@ -6,6 +6,8 @@ bring openai;
 //{
 //  "OAIAPIKey": "<your key here>"
 //}
+// Alternatively, you can set the secret value in the OpenAI constructor directly in line 18, like this:
+// this.openai = new openai.OpenAI(apiKey: <your key here>);
 let apiKeySecret = new cloud.Secret(name: "OAIAPIKey") as "OpenAI Secret";
 
 class Assistant {
