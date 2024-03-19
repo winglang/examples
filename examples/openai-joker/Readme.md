@@ -1,4 +1,4 @@
-# HTTP API Server Side Rendered HTML
+# OpenAI Joker
 
 This is an example of how to use openai API with Wing.
 
@@ -23,7 +23,15 @@ Please make sure to use a current and working setup of the [wing cli](https://do
 
 ### Wing Console
 
-Uncomment line 7 or 8 in `openai.js` to use the `openai` API key.
+Follow the instructions on line 4 in the `main.w` file to set up the openai API key.
+
+If you haven't installed winglang yet, you can do so by running the following command in the terminal:
+
+```sh
+npm install -g winglang
+```
+
+Then run the following commands in the terminal:
 
 ```sh
 npm install
