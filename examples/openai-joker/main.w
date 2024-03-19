@@ -1,20 +1,28 @@
 bring cloud;
+bring openai;
+
+// TODO: Set the secret value in the "secrets.json" file (create it if needed) in the ".wing" folder inside your user's folder.
+// You need to add an OAIAPIKey like this:
+//{
+//  "OAIAPIKey": "<your key here>"
+//}
+let apiKeySecret = new cloud.Secret(name: "OAIAPIKey") as "OpenAI Secret";
 
 class Assistant {
   personality: str;
+  openai: openai.OpenAI;
 
   new(personality: str) {
+    this.openai = new openai.OpenAI(apiKeySecret: apiKeySecret);
     this.personality = personality;
   }
 
   pub inflight ask(question: str): str {
     let prompt = "you are an assistant with the following personality: {this.personality}. {question}";
-    let response = Assistant.createCompletion(prompt);
+    let response = this.openai.createCompletion(prompt);
 
     return response.trim();
   }
-
-  pub extern "./openai.js" static inflight createCompletion(prompt: str): str;
 }
 
 class Comedian {
