@@ -5,13 +5,11 @@ This is an example of how to use openai API with Wing.
 It is an app that uses the openai API to generate jokes and then to translate them to different languages.
 Both the original joke in English and all the translations are put in a `cloud.Bucket`.
 
-The joke generator (Comedian class), and the translators (Translator class) use an Assistant class that is a wrapper around the openai API. The example uses the JS API for openai and calls it from Wing with the `extern` command.
+The joke generator (Comedian class), and the translators (Translator class) use an Assistant class that is a wrapper around the openai API. The example uses the openai winglib to make the openai calls.
 
-Once a joke is generater it is sent to a `cloud.Topic` that the translators subscribe to.
+Once a joke is generated, it is sent to a `cloud.Topic` that the translators subscribe to.
 
 The translators then translate the joke to different languages and put the translations in the `cloud.Bucket`.
-
-Since this example makes use of external Javascript, it won't run in the [Wing Playground](https://www.winglang.io/play) yet.
 
 ![diagram](./diagram.png)
 
