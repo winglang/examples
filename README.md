@@ -16,7 +16,7 @@ This repo contains full examples, tested against the most recent releases of Win
 - [S3 Backend](./examples/s3-backend)
 - [Terraform Backend](https://github.com/winglang/terraform-backend) (dedicated repository)
 - [React Website](./examples/react-website)
-- [Todo](./examples/todo/)
+- [Todo](./examples/todo-app/)
 - [Multiplayer Video Game](./examples/multiplayer-videogame/)
 
 ### Wing - Typescript
