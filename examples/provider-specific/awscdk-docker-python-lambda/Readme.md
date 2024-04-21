@@ -4,32 +4,39 @@ This isn't leveraging the Wing SDK, but using Constructs from the AWS CDK direct
 
 This is largely based on an example by [Marcio Cruz](https://github.com/marciocadev) who contributed the AWS CDK provider for wing.
 
+This project is using the [AWS CDK target platform](https://www.winglang.io/docs/platforms/awscdk).
+
+![diagram](./diagram.png)
+
 ## Prerequisite
 
-Please make sure to use a current and working setup of the [wing cli](https://docs.winglang.io/getting-started/installation).
+Please make sure to use a current and working setup of the [Wing
+CLI](https://docs.winglang.io/getting-started/installation)
 
 ## Usage
 
 ### Setup
 
-Nb: In case of a globally installed Wing CLI, the `aws-cdk-lib` package needs to be installed globally as well. See this [issue](https://github.com/winglang/wing/issues/2478) for more details.
-
-```
+```sh
 npm install
 ```
 
-### Wing Console
+### Wing Simulator
 
-As of May 2023 the Wing Console is not yet supported.
+```sh
+wing it
+```
 
-### Wing Tests
+### Bootstrap
 
-As of May 2023 tests are not yet supported out of the box
+Before the first deployment to an AWS environment (account/region), you'll need to bootstrap some CDK resources:
+
+```sh
+npx cdk bootstrap
+```
 
 ### Deploy
 
-```
-export CDK_STACK_NAME="wing-docker-python-lambda"
-wing compile -t awscdk main.w
-npx cdk deploy --app "./target/main.awscdk"
+```sh
+npx cdk deploy
 ```
