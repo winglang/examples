@@ -1,0 +1,4 @@
+{
+  "app": "CDK_STACK_NAME=awscdk-docker-python-lambda-test wing compile --no-analytics --no-update-check --platform @winglang/platform-awscdk main.w",
+  "output": "target/main.awscdk"
+}

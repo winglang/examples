@@ -46,10 +46,10 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
-      - name: Setup Node.js v18
+      - name: Setup Node.js v20
         uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: 20
       - name: Install winglang globally
         run: |
           npm install -g winglang@latest
