@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@winglibs/redis": "^0.0.11"
+  }
+}

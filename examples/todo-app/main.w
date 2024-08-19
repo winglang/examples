@@ -1,8 +1,8 @@
 bring cloud;
-bring ex;
 bring util;
 bring http;
 bring expect;
+bring redis;
 
 enum Status {
   PENDING, COMPLETED
@@ -73,17 +73,17 @@ let convertTaskArrayToJson = inflight (taskArray: Array<Task>): Json => {
  ********************************************************************/
 
 class TaskStorage impl ITaskStorage {
-  db: ex.Redis;
+  db: redis.Redis;
   counter: cloud.Counter;
 
   new() {
-    this.db = new ex.Redis();
+    this.db = new redis.Redis();
     this.counter = new cloud.Counter();
   }
 
   inflight _add(id: str, j: Json) {
     this.db.set(id , Json.stringify(j));
-    this.db.sadd("tasks", id);
+    this.db.sAdd("tasks", id);
   }
 
   pub inflight add(description: str): str {
@@ -120,8 +120,8 @@ class TaskStorage impl ITaskStorage {
 
   pub inflight find(r: IRegExp): Array<Task> {
     let result = MutArray<Task>[];
-    let ids = this.db.smembers("tasks");
-    for id in ids {
+    let ids = this.db.sMembers("tasks");
+    for id in ids ?? [] {
       if let taskJsonStr = this.db.get(id) {
         let taskJson = Json.parse(taskJsonStr);
         if r.test(taskJson.get("description").asStr()) {

@@ -1,20 +1,20 @@
 bring cloud;
-bring ex;
+bring redis;
 bring util;
 bring expect;
 
 let queue = new cloud.Queue();
-let redis = new ex.Redis();
+let cache = new redis.Redis();
 
 queue.setConsumer(inflight (message) => {
-  redis.set("hello", message);
+  cache.set("hello", message);
 }, timeout: 3s);
 
 test "Hello, world!" {
   queue.push("world!");
   util.waitUntil(() => {
-    return redis.get("hello") != nil;
+    return cache.get("hello") != nil;
   });
 
-  expect.equal(redis.get("hello"), "world!");
+  expect.equal(cache.get("hello"), "world!");
 }
