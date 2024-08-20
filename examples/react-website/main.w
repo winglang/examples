@@ -1,7 +1,7 @@
 bring cloud;
 bring util;
 bring http;
-bring ex;
+bring react;
 
 let api = new cloud.Api();
 
@@ -12,7 +12,7 @@ api.get("/test", inflight (req) => {
   };
 });
 
-let website = new ex.ReactApp(
+let website = new react.App(
   projectPath: "./website",
   useBuildCommand: true,
   localPort: 3002,
