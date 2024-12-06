@@ -1,0 +1,20 @@
+{
+	"compilerOptions": {
+		"noEmit": true,
+		"experimentalDecorators": true,
+		"module": "ESNext",
+		"moduleResolution": "Bundler",
+		"lib": ["ESNext"],
+		"target": "ESNext",
+		"allowArbitraryExtensions": true,
+		"allowImportingTsExtensions": false,
+		"strict": true,
+		"forceConsistentCasingInFileNames": true,
+		"isolatedModules": true,
+		"noPropertyAccessFromIndexSignature": true,
+		"noUncheckedIndexedAccess": true,
+		"downlevelIteration": false,
+		"moduleDetection": "force"
+	},
+	"exclude": ["build/", "cdk.out/", "node_modules/"]
+}
